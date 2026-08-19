@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>BARRA · Calistenia</title>
+<meta name="theme-color" content="#D7D8D2">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="BARRA">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --concrete:#D7D8D2;
+  --concrete-dk:#C4C6BE;
+  --surface:#ECEDE9;
+  --ink:#15171A;
+  --iron:#3B424A;
+  --muted:#71767C;
+  --line:#B9BCB4;
+  --cobalt:#1F3BE8;
+  --cobalt-soft:#DDE1FC;
+  --signal:#D8391B;
+  --chalk:#FFFFFF;
+  --ok:#1F6E3C;
+  --r:4px;
+  --pad:16px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  background:var(--concrete);
+  color:var(--ink);
+  font-family:'Inter',system-ui,-apple-system,sans-serif;
+  font-size:15px;line-height:1.5;
+  padding-bottom:calc(72px + env(safe-area-inset-bottom));
+  overscroll-behavior-y:none;
+}
+h1,h2,h3,.disp{font-family:'Archivo Black','Inter',sans-serif;font-weight:400;letter-spacing:-.02em;line-height:1}
+.mono,.num{font-family:'JetBrains Mono',ui-monospace,monospace;font-variant-numeric:tabular-nums}
+
+/* ---------- topbar ---------- */
+.top{
+  position:sticky;top:0;z-index:40;
+  background:var(--ink);color:var(--concrete);
+  padding:calc(10px + env(safe-area-inset-top)) var(--pad) 10px;
+}
+.top-row{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.brand{font-family:'Archivo Black';font-size:19px;letter-spacing:.06em}
+.brand span{color:var(--cobalt);}
+.top-meta{font-family:'JetBrains Mono';font-size:11px;color:#9AA0A6;letter-spacing:.04em}
+/* week strip */
+.weeks{display:flex;gap:3px;margin-top:9px}
+.wk{flex:1;height:5px;background:#31363D;border-radius:1px}
+.wk.past{background:#5C636B}
+.wk.now{background:var(--cobalt)}
+.wk.deload{background:#7A4A3E}
+
+/* ---------- layout ---------- */
+main{padding:var(--pad);max-width:640px;margin:0 auto}
+.view{display:none}
+.view.on{display:block;animation:fade .18s ease}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+.eyebrow{font-family:'JetBrains Mono';font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);margin-bottom:12px}
+.card-pad{padding:14px}
+.hr{height:1px;background:var(--line);border:0;margin:0}
+
+/* ---------- hero: today ---------- */
+.hero{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;margin-bottom:12px}
+.hero-top{padding:14px 14px 12px;display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.hero h1{font-size:27px;margin:4px 0 6px}
+.place{font-family:'JetBrains Mono';font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
+  border:1px solid var(--ink);padding:4px 7px;border-radius:2px;white-space:nowrap}
+.place.parque{background:var(--ink);color:var(--surface)}
+.hero-sub{color:var(--iron);font-size:13.5px}
+.bar-meter{display:flex;height:8px;background:var(--concrete-dk)}
+.bar-meter i{display:block;background:var(--cobalt);transition:width .3s ease}
+.hero-foot{padding:9px 14px;display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
+
+/* volume banner */
+.note{border-left:3px solid var(--cobalt);background:var(--cobalt-soft);padding:10px 12px;font-size:13px;margin-bottom:12px;border-radius:0 var(--r) var(--r) 0}
+.note.warn{border-color:var(--signal);background:#F8E2DD}
+.note b{font-weight:700}
+
+/* ---------- blocks / exercises ---------- */
+.blk{margin-bottom:12px;border:1px solid var(--line);border-radius:var(--r);background:var(--surface);overflow:hidden}
+.blk-h{display:flex;align-items:center;gap:10px;padding:11px 13px;background:var(--concrete-dk);cursor:pointer;user-select:none}
+.blk-tag{font-family:'Archivo Black';font-size:15px;width:22px;text-align:center;color:var(--cobalt)}
+.blk-t{flex:1;font-weight:600;font-size:14px}
+.blk-min{font-family:'JetBrains Mono';font-size:11px;color:var(--iron)}
+.chev{font-size:11px;color:var(--iron);transition:transform .2s}
+.blk.closed .chev{transform:rotate(-90deg)}
+.blk.closed .blk-body{display:none}
+
+.ex{padding:12px 13px;border-top:1px solid var(--line)}
+.ex:first-child{border-top:0}
+.ex-h{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.ex-n{font-weight:600;font-size:14.5px;flex:1}
+.ex-p{font-family:'JetBrains Mono';font-size:12px;color:var(--cobalt);font-weight:700;white-space:nowrap}
+.cue{font-size:12.5px;color:var(--muted);margin-top:5px;line-height:1.45}
+.ex.done .ex-n{color:var(--muted)}
+
+/* tally counter */
+.tally-row{display:flex;align-items:center;gap:10px;margin-top:10px}
+.tally{flex:1;min-height:34px;background:var(--chalk);border:1px solid var(--line);border-radius:2px;
+  display:flex;align-items:center;padding:0 9px;gap:9px;cursor:pointer;flex-wrap:wrap}
+.tally:active{background:var(--cobalt-soft)}
+.tally-empty{font-family:'JetBrains Mono';font-size:11px;color:var(--muted);letter-spacing:.06em}
+.minus{width:34px;height:34px;border:1px solid var(--line);background:var(--surface);border-radius:2px;
+  font-size:17px;line-height:1;color:var(--iron);cursor:pointer;flex:0 0 34px}
+.minus:active{background:var(--concrete-dk)}
+.setcount{font-family:'JetBrains Mono';font-size:12px;font-weight:700;color:var(--iron);min-width:30px;text-align:right}
+
+/* note input */
+.exnote{width:100%;margin-top:8px;padding:7px 9px;border:1px solid var(--line);background:var(--chalk);
+  border-radius:2px;font-family:'JetBrains Mono';font-size:12px;color:var(--ink)}
+.exnote::placeholder{color:#A9ADB2}
+
+/* ---------- buttons ---------- */
+.btn{display:block;width:100%;padding:14px;border:0;border-radius:var(--r);background:var(--ink);color:var(--concrete);
+  font-family:'Archivo Black';font-size:14px;letter-spacing:.04em;cursor:pointer}
+.btn:active{transform:translateY(1px)}
+.btn.blue{background:var(--cobalt);color:#fff}
+.btn.ghost{background:transparent;border:1px solid var(--line);color:var(--iron);font-family:'Inter';font-weight:600;font-size:13px;padding:11px}
+.btn.done{background:var(--ok);color:#fff}
+
+/* ---------- rest timer ---------- */
+.timer{position:fixed;left:0;right:0;bottom:calc(64px + env(safe-area-inset-bottom));z-index:45;
+  background:var(--ink);color:var(--concrete);display:none;align-items:center;gap:12px;padding:10px 14px}
+.timer.on{display:flex}
+.timer-n{font-family:'JetBrains Mono';font-size:24px;font-weight:700;min-width:66px}
+.timer-bar{flex:1;height:4px;background:#31363D}
+.timer-bar i{display:block;height:100%;background:var(--cobalt)}
+.timer button{background:none;border:1px solid #5C636B;color:var(--concrete);border-radius:2px;padding:6px 10px;font-size:12px;cursor:pointer}
+.tpick{display:flex;gap:6px;margin:2px 0 12px}
+.tpick button{flex:1;padding:9px;border:1px solid var(--line);background:var(--surface);border-radius:2px;
+  font-family:'JetBrains Mono';font-size:12px;font-weight:700;color:var(--iron);cursor:pointer}
+.tpick button:active{background:var(--cobalt);color:#fff}
+
+/* ---------- ladders (signature) ---------- */
+.ladder-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);margin-bottom:12px;overflow:hidden}
+.ld-h{padding:13px 14px 11px;display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.ld-h h3{font-size:17px;margin:0 0 4px}
+.ld-pct{font-family:'JetBrains Mono';font-size:22px;font-weight:700;color:var(--cobalt);line-height:1}
+.ld-goal{font-size:12px;color:var(--muted)}
+.rungs{padding:0 14px 14px;display:flex;flex-direction:column-reverse;gap:5px}
+.rung{display:flex;align-items:center;gap:11px;cursor:pointer;padding:2px 0}
+.rung-bar{width:44px;height:9px;border:1.5px solid var(--iron);border-radius:1px;background:transparent;flex:0 0 44px}
+.rung.filled .rung-bar{background:var(--iron)}
+.rung.cur .rung-bar{background:var(--cobalt);border-color:var(--cobalt);box-shadow:0 0 0 3px var(--cobalt-soft)}
+.rung-t{font-size:13.5px;color:var(--muted)}
+.rung.filled .rung-t{color:var(--iron)}
+.rung.cur .rung-t{color:var(--ink);font-weight:700}
+.rung-i{font-family:'JetBrains Mono';font-size:10px;color:var(--muted);width:14px;flex:0 0 14px}
+
+/* ---------- log / inputs ---------- */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.fld label{display:block;font-family:'JetBrains Mono';font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+.fld input{width:100%;padding:11px 10px;border:1px solid var(--line);background:var(--chalk);border-radius:2px;
+  font-family:'JetBrains Mono';font-size:16px;font-weight:700;color:var(--ink)}
+.spark{width:100%;height:52px;display:block;margin-top:10px}
+.hist{font-family:'JetBrains Mono';font-size:12px;color:var(--iron)}
+.hist div{display:flex;justify-content:space-between;padding:6px 0;border-top:1px solid var(--line)}
+
+/* nutrition rings */
+.fuel{display:flex;gap:10px;margin-bottom:12px}
+.fuel-c{flex:1;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px;text-align:center}
+.fuel-n{font-family:'JetBrains Mono';font-size:23px;font-weight:700;line-height:1.1}
+.fuel-t{font-family:'JetBrains Mono';font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-top:3px}
+.fuel-bar{height:5px;background:var(--concrete-dk);margin-top:9px}
+.fuel-bar i{display:block;height:100%;background:var(--cobalt)}
+.fuel-bar.full i{background:var(--ok)}
+.quick{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}
+.quick button{flex:1;min-width:62px;padding:10px 4px;border:1px solid var(--line);background:var(--surface);
+  border-radius:2px;font-family:'JetBrains Mono';font-size:12px;font-weight:700;color:var(--iron);cursor:pointer}
+.quick button:active{background:var(--cobalt);color:#fff}
+.toggle{display:flex;align-items:center;justify-content:space-between;padding:13px 14px;cursor:pointer}
+.tg{width:46px;height:26px;background:var(--concrete-dk);border-radius:13px;position:relative;flex:0 0 46px;transition:background .2s}
+.tg::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;background:var(--chalk);border-radius:10px;transition:transform .2s}
+.toggle.on .tg{background:var(--ok)}
+.toggle.on .tg::after{transform:translateX(20px)}
+
+/* tables */
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{text-align:left;padding:9px 10px;border-top:1px solid var(--line);vertical-align:top}
+th{font-family:'JetBrains Mono';font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);border-top:0}
+td.n{font-family:'JetBrains Mono';font-weight:700;text-align:right;white-space:nowrap}
+
+/* checklist */
+.chk{display:flex;gap:11px;padding:11px 14px;border-top:1px solid var(--line);cursor:pointer;align-items:flex-start}
+.chk:first-of-type{border-top:0}
+.box{width:19px;height:19px;border:1.5px solid var(--iron);border-radius:2px;flex:0 0 19px;margin-top:1px;position:relative}
+.chk.on .box{background:var(--cobalt);border-color:var(--cobalt)}
+.chk.on .box::after{content:'✓';color:#fff;position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700}
+.chk.on .chk-t{color:var(--muted);text-decoration:line-through}
+.chk-t{font-size:14px;flex:1}
+.chk-s{font-size:12px;color:var(--muted);display:block;text-decoration:none!important;margin-top:2px}
+
+/* ---------- tabbar ---------- */
+nav{position:fixed;bottom:0;left:0;right:0;z-index:50;background:var(--ink);
+  display:flex;padding-bottom:env(safe-area-inset-bottom);border-top:1px solid #000}
+nav button{flex:1;background:none;border:0;color:#7C838B;padding:10px 2px 11px;cursor:pointer;
+  font-family:'JetBrains Mono';font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;
+  display:flex;flex-direction:column;align-items:center;gap:5px}
+nav button .ic{width:20px;height:20px;display:block}
+nav button.on{color:#fff}
+nav button.on .ic{color:var(--cobalt)}
+
+.rest-day{text-align:center;padding:48px 20px}
+.rest-day h1{font-size:34px;margin-bottom:10px}
+.rest-day p{color:var(--iron);max-width:320px;margin:0 auto}
+footer{padding:26px 4px 10px;font-size:11.5px;color:var(--muted);text-align:center;line-height:1.6}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-row">
+    <div class="brand">BAR<span>RA</span></div>
+    <div class="top-meta" id="topMeta">—</div>
+  </div>
+  <div class="weeks" id="weeks"></div>
+</header>
+
+<main>
+  <!-- ================= HOY ================= -->
+  <section class="view on" id="v-hoy"></section>
+
+  <!-- ================= SKILLS ================= -->
+  <section class="view" id="v-skills">
+    <div class="eyebrow" style="margin-bottom:10px">Escaleras de progresión</div>
+    <div class="note">Toca el peldaño que puedes hacer <b>hoy, limpio y sin ayuda</b>. Si dudas, es el de abajo. Persigue máximo 2 principales + 1 secundario a la vez.</div>
+    <div id="ladders"></div>
+  </section>
+
+  <!-- ================= REGISTRO ================= -->
+  <section class="view" id="v-log">
+    <div class="eyebrow" style="margin-bottom:10px">Tests y peso</div>
+    <div id="retestNote"></div>
+
+    <div class="card">
+      <div class="card-pad">
+        <h3 style="font-size:16px;margin:0 0 3px">Retest de máximos</h3>
+        <p style="font-size:12.5px;color:var(--muted);margin:0 0 13px">Tres días separados, con descanso entre cada uno. Hasta el fallo técnico, no hasta el fallo sucio.</p>
+        <div class="grid2" style="margin-bottom:9px">
+          <div class="fld"><label>Pull-ups</label><input type="number" inputmode="numeric" id="t_pu"></div>
+          <div class="fld"><label>Push-ups</label><input type="number" inputmode="numeric" id="t_pf"></div>
+          <div class="fld"><label>Dips</label><input type="number" inputmode="numeric" id="t_dp"></div>
+          <div class="fld"><label>Handstand (s)</label><input type="number" inputmode="numeric" id="t_hs"></div>
+          <div class="fld"><label>Hollow body (s)</label><input type="number" inputmode="numeric" id="t_hb"></div>
+          <div class="fld"><label>Cintura (cm)</label><input type="number" inputmode="decimal" id="t_ct"></div>
+        </div>
+        <button class="btn blue" id="saveTest">Guardar retest</button>
+      </div>
+      <div id="testHist"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-pad">
+        <h3 style="font-size:16px;margin:0 0 3px">Peso corporal</h3>
+        <p style="font-size:12.5px;color:var(--muted);margin:0 0 13px">Pésate en ayunas, mismo día de la semana. Un dato suelto no dice nada; la línea de 3 semanas sí.</p>
+        <div style="display:flex;gap:9px">
+          <div class="fld" style="flex:1"><label>Peso (kg)</label><input type="number" step="0.1" inputmode="decimal" id="w_in" placeholder="74.5"></div>
+          <button class="btn blue" id="saveW" style="width:110px;align-self:flex-end;height:44px;padding:0">Guardar</button>
+        </div>
+        <svg class="spark" id="wSpark" viewBox="0 0 300 52" preserveAspectRatio="none"></svg>
+        <div id="wStat" class="mono" style="font-size:12px;color:var(--iron)"></div>
+      </div>
+    </div>
+
+    <div class="note"><b>Lee esto antes que la báscula:</b> lo que importa es fuerza relativa. Si tus dominadas suben y la cintura baja, funciona — aunque el peso no se mueva. Si el peso baja y las dominadas también, el déficit está muy fuerte: sube comida.</div>
+  </section>
+
+  <!-- ================= COMIDA ================= -->
+  <section class="view" id="v-fuel">
+    <div class="eyebrow" style="margin-bottom:10px">Hoy · objetivos a 74.5 kg</div>
+    <div class="fuel">
+      <div class="fuel-c">
+        <div class="fuel-n"><span id="pNum">0</span><span style="font-size:13px;color:var(--muted)">/150</span></div>
+        <div class="fuel-t">Proteína g</div>
+        <div class="fuel-bar" id="pBar"><i style="width:0"></i></div>
+      </div>
+      <div class="fuel-c">
+        <div class="fuel-n"><span id="wNum">0</span><span style="font-size:13px;color:var(--muted)">/3.5</span></div>
+        <div class="fuel-t">Agua L</div>
+        <div class="fuel-bar" id="wBar"><i style="width:0"></i></div>
+      </div>
+    </div>
+
+    <div class="card card-pad">
+      <div class="eyebrow">Sumar proteína</div>
+      <div class="quick">
+        <button data-p="19">3 huevos<br>19 g</button>
+        <button data-p="46">Pollo 150<br>46 g</button>
+        <button data-p="25">Atún lata<br>25 g</button>
+        <button data-p="40">Carne 150<br>40 g</button>
+      </div>
+      <div class="quick">
+        <button data-p="18">Lentejas<br>18 g</button>
+        <button data-p="18">Queso 100<br>18 g</button>
+        <button data-p="18">Yogur<br>18 g</button>
+        <button data-p="8">Leche<br>8 g</button>
+      </div>
+      <div class="quick" style="margin-top:12px">
+        <button data-p="10">+10</button>
+        <button data-p="-10" style="color:var(--signal)">−10</button>
+      </div>
+    </div>
+
+    <div class="card card-pad">
+      <div class="eyebrow">Sumar agua</div>
+      <div class="quick">
+        <button data-w="0.25">+250 ml</button>
+        <button data-w="0.5">+500 ml</button>
+        <button data-w="1">+1 L</button>
+        <button data-w="-0.25" style="color:var(--signal)">−250</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="toggle" id="creaTog"><div><div style="font-weight:600">Creatina 5 g</div><div style="font-size:12px;color:var(--muted)">Todos los días, entrenes o no</div></div><div class="tg"></div></div>
+    </div>
+
+    <div class="card">
+      <div class="card-pad" style="padding-bottom:4px"><div class="eyebrow">Resto de macros</div></div>
+      <table>
+        <tr><td>Carbohidratos</td><td class="n">225–300 g</td></tr>
+        <tr><td>Grasas</td><td class="n">60–75 g</td></tr>
+        <tr><td>Calorías (mantenimiento)</td><td class="n">2400–2700</td></tr>
+        <tr><td>Sueño</td><td class="n">7–9 h</td></tr>
+      </table>
+    </div>
+
+    <div class="note">Semanas 1–4 come en mantenimiento. El déficit —si lo quieres— entra desde la semana 5, y suave: 200–300 kcal.</div>
+  </section>
+
+  <!-- ================= PLAN ================= -->
+  <section class="view" id="v-plan">
+    <div class="eyebrow" style="margin-bottom:10px">Referencia</div>
+
+    <div class="card">
+      <div class="card-pad" style="padding-bottom:4px"><h3 style="font-size:16px;margin:0">La semana</h3></div>
+      <table id="weekTable"></table>
+    </div>
+
+    <div class="card">
+      <div class="card-pad" style="padding-bottom:4px"><h3 style="font-size:16px;margin:0 0 3px">Equipo</h3>
+      <p style="font-size:12.5px;color:var(--muted);margin:0">Nivel 1 completo antes de tocar el Nivel 2.</p></div>
+      <div id="equipList"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-pad" style="padding-bottom:4px"><h3 style="font-size:16px;margin:0">Si no puedes ir al parque</h3></div>
+      <table>
+        <tr><td><b>Pull-ups</b></td><td>Jalón con banda anclada arriba de la puerta 4×15 · Remo invertido bajo tus paralelas 4×12</td></tr>
+        <tr><td><b>Muscle-up</b></td><td>Dips explosivos 5×3 · Rueda abdominal de pie, negativas 4×5</td></tr>
+        <tr><td><b>Anillas</b></td><td>Paralelas + bandas + rueda</td></tr>
+        <tr><td><b>Front lever</b></td><td>Rueda abdominal — mismo patrón anti-extensión</td></tr>
+      </table>
+      <div class="card-pad" style="border-top:1px solid var(--line);font-size:12.5px;color:var(--iron)">Máximo <b>un</b> día de parque sustituido por semana. El muscle-up no se aprende sin colgar.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-pad" style="padding-bottom:4px"><h3 style="font-size:16px;margin:0">Reglas</h3></div>
+      <table>
+        <tr><td><b>Skills primero</b></td><td>Un skill con fatiga es un skill mal aprendido.</td></tr>
+        <tr><td><b>Técnica antes que reps</b></td><td>Si la forma se rompe, el set terminó.</td></tr>
+        <tr><td><b>Graba video semanal</b></td><td>Nadie sabe si arquea la espalda sin verse.</td></tr>
+        <tr><td><b>Calienta muñeca y codo</b></td><td>5 minutos evitan 6 semanas de pausa.</td></tr>
+        <tr><td><b>Domingo sagrado</b></td><td>Descanso completo, no opcional.</td></tr>
+        <tr><td><b>Día flojo ≠ día perdido</b></td><td>Baja al 60%, no saltes.</td></tr>
+        <tr><td><b>Una variable a la vez</b></td><td>O más reps, o más peso, o progresión más dura.</td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="card-pad">
+        <h3 style="font-size:16px;margin:0 0 3px">Inicio del programa</h3>
+        <p style="font-size:12.5px;color:var(--muted);margin:0 0 11px">Cambiar esto recalcula tu semana actual.</p>
+        <div class="fld"><label>Semana 1, día 1</label><input type="date" id="startD" style="font-family:'JetBrains Mono';font-size:14px"></div>
+        <div style="height:10px"></div>
+        <button class="btn ghost" id="resetAll">Borrar todos los datos</button>
+      </div>
+    </div>
+
+    <footer>BARRA · seguimiento del plan de 12 semanas<br>Muscle-up · Handstand push-up · 74.5 kg</footer>
+  </section>
+</main>
+
+<div class="timer" id="timer">
+  <div class="timer-n" id="timerN">0:00</div>
+  <div class="timer-bar"><i id="timerBar" style="width:100%"></i></div>
+  <button id="timerStop">Parar</button>
+</div>
+
+<nav>
+  <button class="on" data-v="hoy"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 8v8M20 8v8M4 12h16M2 10v4M22 10v4"/></svg>Hoy</button>
+  <button data-v="skills"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3v18M18 3v18M6 7h12M6 12h12M6 17h12"/></svg>Skills</button>
+  <button data-v="log"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 18l5-6 4 3 5-7 4 4"/><path d="M3 21h18"/></svg>Registro</button>
+  <button data-v="fuel"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3c3 4 5 6 5 9a5 5 0 01-10 0c0-3 2-5 5-9z"/></svg>Comida</button>
+  <button data-v="plan"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M8 9h8M8 13h8M8 17h5"/></svg>Plan</button>
+</nav>
+
+<script>
+/* ============================================================
+   STORAGE — funciona dentro de Claude (window.storage),
+   como PWA en tu celular (localStorage), o en memoria.
+   ============================================================ */
+const KEY='barra:v1';
+let mem={};
+const Store={
+  async get(k){
+    try{ if(window.storage){const r=await window.storage.get(k,false); if(r&&r.value!=null) return r.value;} }catch(e){}
+    try{ const v=localStorage.getItem(k); if(v!=null) return v; }catch(e){}
+    return mem[k]||null;
+  },
+  async set(k,v){
+    let ok=false;
+    try{ if(window.storage){ await window.storage.set(k,v,false); ok=true; } }catch(e){}
+    if(!ok){ try{ localStorage.setItem(k,v); ok=true; }catch(e){} }
+    if(!ok) mem[k]=v;
+  }
+};
+
+/* ============================================================
+   DATOS DEL PROGRAMA
+   ============================================================ */
+const DAYS=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+
+const SESSIONS={
+1:{name:'Empuje Vertical',focus:'Ruta HSPU',place:'casa',blocks:[
+  {tag:'W',t:'Calentamiento · muñecas y hombro',min:10,items:[
+    {n:'Círculos y extensión de muñeca',p:'2 min',cue:'Lo que protege tus muñecas todo el bloque. No lo saltes.'},
+    {n:'Band pull-aparts',p:'2 × 20'},
+    {n:'Dislocates con banda',p:'2 × 10'},
+    {n:'Wall slides + escápulas',p:'2 × 10'},
+    {n:'Pike push-up ligero',p:'1 × 8'}]},
+  {tag:'A',t:'Skill · Handstand',min:12,items:[
+    {n:'Handstand pecho a la pared',p:'5 × 20-45 s',cue:'Pecho a la pared, no espalda. La versión de espalda te enseña a arquearte — justo lo contrario de lo que necesitas. Costillas metidas, glúteo apretado, hombros hacia las orejas.'},
+    {n:'Wall walks',p:'3 × 3',cue:'Camina con los pies hacia la pared hasta quedar casi vertical.'}]},
+  {tag:'B',t:'Fuerza principal',min:20,items:[
+    {n:'Pike push-up elevado',p:'4 × 6-8',cue:'Pies en silla o cama. Cabeza toca el suelo — rango completo o no cuenta.'},
+    {n:'Dips en paralelas',p:'4 × 8-10',cue:'Pecho ligeramente adelante, hombros abajo y atrás.'}]},
+  {tag:'C',t:'Accesorio',min:10,items:[
+    {n:'Push-up diamante',p:'3 × 10-12'},
+    {n:'Elevación lateral con banda',p:'3 × 15'}]},
+  {tag:'D',t:'Core anti-extensión',min:8,items:[
+    {n:'Hollow body hold',p:'3 × 30 s',cue:'Espalda baja completamente pegada al suelo.'},
+    {n:'Rueda abdominal',p:'3 × 6-8'}]}
+]},
+2:{name:'Tracción',focus:'Ruta Muscle-Up',place:'parque',blocks:[
+  {tag:'W',t:'Calentamiento · colgar y codo',min:10,items:[
+    {n:'Colgar pasivo y activo',p:'3 × 20 s'},
+    {n:'Scapular pulls',p:'3 × 8'},
+    {n:'Band pull-aparts',p:'2 × 20'},
+    {n:'Extensiones de codo con banda',p:'2 × 15',cue:'Esto previene el codo de golfista, la lesión número uno de quien entrena muscle-up.'}]},
+  {tag:'A',t:'Skill · Explosividad y transición',min:18,items:[
+    {n:'High pull-ups',p:'5 × 3',cue:'ESTE bloque es el muscle-up; lo demás es apoyo. Tira lo más alto posible. Meta progresiva: barbilla → clavícula → pecho → esternón. El día que toques la barra con el esternón, el muscle-up es tuyo.'},
+    {n:'Transición negativa',p:'4 × 3',cue:'Desde apoyo arriba de la barra, baja lento (3-5 s) atravesando la transición.'},
+    {n:'Muscle-up asistido (banda o salto)',p:'3 × 3',from:5,cue:'Desde semana 5. Antes de eso, no.'}]},
+  {tag:'B',t:'Fuerza principal',min:18,items:[
+    {n:'Pull-up estricto',p:'5 × 5',cue:'Lastrado desde semana 5: empieza +5 kg, sube 2.5 kg cuando salgan 5×5 limpio.'},
+    {n:'Ring dip o dip lastrado',p:'4 × 6-8'}]},
+  {tag:'C',t:'Accesorio',min:10,items:[
+    {n:'Remo en anillas, pies elevados',p:'3 × 10-12'},
+    {n:'Curl en anillas o banda',p:'3 × 12'},
+    {n:'Face pulls con banda',p:'3 × 15'}]},
+  {tag:'D',t:'Core',min:6,items:[
+    {n:'Leg raises colgado',p:'3 × 8-10',cue:'Estricto, sin balanceo. Si te balanceas, baja las reps.'}]}
+]},
+3:{name:'Piernas',focus:'Fuerza unilateral + movilidad',place:'casa',blocks:[
+  {tag:'W',t:'Calentamiento',min:8,items:[
+    {n:'Movilidad de tobillo',p:'2 min'},
+    {n:'Cadera 90/90',p:'2 min'},
+    {n:'Sentadilla profunda sostenida',p:'2 × 30 s'}]},
+  {tag:'A',t:'Unilateral pesado',min:20,items:[
+    {n:'Sentadilla búlgara',p:'4 × 8-10 / pierna',cue:'Con mochila cargada o pesa rusa si ya la tienes.'},
+    {n:'Progresión de pistol squat',p:'4 × 5 / pierna',cue:'Escalera: sentadilla a caja alta → caja baja → pistol asistido con banda → pistol completo.'}]},
+  {tag:'B',t:'Cadena posterior',min:15,items:[
+    {n:'Nordic curl',p:'4 × 5-6',cue:'Pies anclados bajo un mueble. Baja lo más lento que puedas y empuja con las manos para volver.'},
+    {n:'Puente de glúteo a una pierna',p:'3 × 12'}]},
+  {tag:'C',t:'Potencia y pantorrilla',min:10,items:[
+    {n:'Jump squats o comba',p:'3 × 10 · o 5 × 1 min'},
+    {n:'Elevación de talón a una pierna',p:'3 × 15'}]},
+  {tag:'D',t:'Movilidad',min:10,items:[
+    {n:'Flexores de cadera, isquios, dorsal, hombro',p:'10 min'},
+    {n:'Cuclillas profundas',p:'2 × 60 s'}]}
+]},
+4:{name:'Empuje Horizontal',focus:'Paralelas y parallettes',place:'casa',blocks:[
+  {tag:'W',t:'Calentamiento · énfasis muñeca',min:8,items:[
+    {n:'Muñecas: círculos, flexión, extensión',p:'3 min'},
+    {n:'Band pull-aparts',p:'2 × 20'},
+    {n:'Escápulas en el suelo',p:'2 × 10'}]},
+  {tag:'A',t:'Skill · L-sit',min:12,items:[
+    {n:'L-sit en parallettes',p:'5 × máximo',cue:'Meta: 20 s continuos. Progresión: rodillas al pecho → una pierna extendida → L-sit completo → L-sit elevado.'},
+    {n:'Tuck planche hold',p:'4 × 10-15 s',cue:'En parallettes. Hombros bien adelante de las manos.'}]},
+  {tag:'B',t:'Fuerza principal',min:20,items:[
+    {n:'Dips en paralelas',p:'4 × 6-8',cue:'Lastrados con mochila desde semana 5.'},
+    {n:'Pseudo planche push-up',p:'4 × 8',cue:'Manos a la altura de la cadera, cuerpo inclinado hacia adelante.'}]},
+  {tag:'C',t:'Accesorio',min:12,items:[
+    {n:'Archer push-up',p:'3 × 6 / lado'},
+    {n:'Push-up con banda',p:'3 × 10',cue:'Banda por la espalda, extremos bajo las manos.'},
+    {n:'Extensión de tríceps con banda',p:'3 × 12',cue:'Banda anclada arriba de la puerta.'}]},
+  {tag:'D',t:'Core anti-rotación',min:8,items:[
+    {n:'Plancha lateral',p:'3 × 30 s / lado'},
+    {n:'Pallof press con banda',p:'3 × 12 / lado'}]}
+]},
+5:{name:'Tracción Horizontal',focus:'Levers',place:'parque',blocks:[
+  {tag:'W',t:'Calentamiento · colgar y codo',min:10,items:[
+    {n:'Colgar pasivo y activo',p:'3 × 20 s'},
+    {n:'Scapular pulls',p:'3 × 8'},
+    {n:'Extensiones de codo con banda',p:'2 × 15'}]},
+  {tag:'A',t:'Skill · Levers',min:18,items:[
+    {n:'Skin the cat',p:'3 × 3',cue:'En anillas. El mejor ejercicio de entrada a los levers y a la salud del hombro. Ve despacio la primera vez.'},
+    {n:'Tuck front lever',p:'5 × 10-20 s',cue:'Progresión: tuck → advanced tuck (caderas extendidas) → una pierna → straddle → completo.'},
+    {n:'Back lever tuck negativa',p:'4 × 5',cue:'Bajadas lentas. Si el hombro tira, quédate más tiempo en tuck cerrado.'}]},
+  {tag:'B',t:'Fuerza principal',min:18,items:[
+    {n:'Chin-up o archer pull-up',p:'4 × 6'},
+    {n:'Remo invertido, pies elevados',p:'4 × 10-12'},
+    {n:'Pull-up agarre ancho',p:'3 × 6'}]},
+  {tag:'C',t:'Core',min:12,items:[
+    {n:'Dragon flag negativa',p:'3 × 4',cue:'Bajadas de 5 s. Requisito: hollow body 30 s perfecto.'},
+    {n:'Windshield wipers colgado',p:'3 × 8',cue:'Rodillas flexionadas al principio.'}]}
+]},
+6:{name:'EMOM y Skills',focus:'Volumen y práctica libre',place:'parque',blocks:[
+  {tag:'A',t:'Práctica libre de skills',min:20,items:[
+    {n:'Lo que estés persiguiendo',p:'20 min',cue:'Handstand, transiciones, front lever. Sin prisa, todo limpio.'},
+    {n:'Grabar video',p:'1 serie',cue:'Sin video estás adivinando. Es la herramienta de coaching más barata que existe.'}]},
+  {tag:'B',t:'EMOM 20 min · al 40% de tu máximo',min:20,items:[
+    {n:'Minutos impares: pull-ups',p:'10 × reps',cue:'Aquí vuelve tu método viejo, ya en su lugar: acumulador de volumen, no columna vertebral del plan.'},
+    {n:'Minutos pares: dips o push-ups',p:'10 × reps'}]},
+  {tag:'C',t:'Acondicionamiento',min:10,items:[
+    {n:'Comba, burpees, sprints o carries',p:'10 min'}]}
+]}
+};
+
+const LADDERS=[
+ {id:'mu',n:'Muscle-up',goal:'Objetivo principal',rungs:['10 pull-ups estrictos','Pull-up a la clavícula','Pull-up al pecho','Pull-up al esternón','Transición negativa controlada','Muscle-up asistido con banda','Muscle-up con salto','Muscle-up completo','3 × 1 limpio']},
+ {id:'hspu',n:'Handstand push-up',goal:'Objetivo principal',rungs:['Pike push-up en el suelo','Pike push-up elevado 8-10','Handstand pared 30 s','Handstand pared 60 s','Wall HSPU parcial','Wall HSPU rango completo','Deficit HSPU en parallettes','HSPU libre negativa','HSPU libre']},
+ {id:'fl',n:'Front lever',goal:'Secundario sugerido',rungs:['Hollow body 30 s','Tuck front lever 10 s','Advanced tuck 15 s','Una pierna extendida','Straddle','Front lever completo']},
+ {id:'ls',n:'L-sit',goal:'Base de todo lo demás',rungs:['Rodillas al pecho','Una pierna extendida','L-sit 10 s','L-sit 20 s','L-sit elevado','V-sit']},
+ {id:'hs',n:'Handstand libre',goal:'Habilidad de años',rungs:['Wall walks','Pecho a la pared 30 s','Pecho a la pared 60 s','Kick-up con toques','Libre 5 s','Libre 20 s']},
+ {id:'df',n:'Dragon flag',goal:'Core',rungs:['Hollow body 30 s','Tuck negativa','Media extensión negativa','Negativa completa 5 s','Dragon flag completo']},
+ {id:'ps',n:'Pistol squat',goal:'Pierna',rungs:['Sentadilla a caja alta','Sentadilla a caja baja','Pistol asistido con banda','Pistol negativo','Pistol completo']},
+ {id:'bl',n:'Back lever',goal:'Cuando el hombro esté listo',rungs:['Skin the cat','Tuck back lever','Advanced tuck','Una pierna','Straddle','Back lever completo']},
+ {id:'hf',n:'Human flag',goal:'Necesita barra vertical · parque',rungs:['Plancha lateral 45 s','Support hold vertical','Tuck flag','Una pierna','Straddle','Human flag completo']}
+];
+
+const EQUIP=[
+ {id:'e1',t:'Anillas de gimnasia · madera',s:'Nivel 1 · Tu barra portátil. Las cuelgas del pasamanos en 30 segundos.'},
+ {id:'e2',t:'Parallettes bajas 20-30 cm',s:'Nivel 1 · Deficit HSPU, L-sit, muñeca en posición neutra.'},
+ {id:'e3',t:'Colchoneta gruesa',s:'Nivel 1 · Core, movilidad, y caer del handstand sin partirte el cuello.'},
+ {id:'e4',t:'Cinturón de lastre',s:'Nivel 1 · La vía más rápida al muscle-up. Mientras tanto: mochila con carga.'},
+ {id:'e5',t:'Medir marcos de puerta',s:'¿Alguno con 25-30 cm libres arriba? Barra de puerta = tracción en casa sin taladrar.'},
+ {id:'e6',t:'Inventario del parque',s:'Altura de barras, pasamanos, barra vertical, barras bajas. Toma fotos.'},
+ {id:'e7',t:'Pesa rusa 16-20 kg',s:'Nivel 2 · Semana 5. Para el día de pierna.'},
+ {id:'e8',t:'Magnesio líquido',s:'Nivel 2 · Muchos primeros muscle-ups fallan porque la mano resbala, no por fuerza.'},
+ {id:'e9',t:'Cuerda para saltar',s:'Nivel 2 · Acondicionamiento y tobillo en 10 minutos.'},
+ {id:'e10',t:'Bandas elásticas ✓',s:'Ya las tienes.'},
+ {id:'e11',t:'Rueda abdominal ✓',s:'Ya la tienes.'},
+ {id:'e12',t:'Barras paralelas ✓',s:'Ya las tienes.'}
+];
+
+/* ============================================================
+   ESTADO
+   ============================================================ */
+let D={start:null,daily:{},tests:[],weight:[],skills:{},equip:{}};
+const today=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');};
+let saveT=null;
+function save(){clearTimeout(saveT);saveT=setTimeout(()=>Store.set(KEY,JSON.stringify(D)),350);}
+function day(k){if(!D.daily[k])D.daily[k]={sets:{},notes:{},prot:0,water:0,crea:false,fin:false};return D.daily[k];}
+
+function weekNum(){
+  if(!D.start)return 1;
+  const s=new Date(D.start+'T00:00:00'), n=new Date(today()+'T00:00:00');
+  const w=Math.floor((n-s)/864e5/7)+1;
+  return Math.max(1,w);
+}
+function blockNum(w){return w<=4?1:w<=8?2:3;}
+function isDeload(w){return w===8||w===12;}
+
+/* ============================================================
+   RENDER · HOY
+   ============================================================ */
+function renderTop(){
+  const w=weekNum(), b=blockNum(w);
+  document.getElementById('topMeta').textContent=
+    w>12?'PROGRAMA COMPLETO':`SEM ${String(w).padStart(2,'0')} · BLOQUE ${b}`;
+  const el=document.getElementById('weeks');el.innerHTML='';
+  for(let i=1;i<=12;i++){
+    const d=document.createElement('div');
+    d.className='wk'+(i<w?' past':i===w?' now':'')+(isDeload(i)&&i!==w?' deload':'');
+    el.appendChild(d);
+  }
+}
+
+function renderHoy(){
+  const host=document.getElementById('v-hoy');
+  const dow=new Date().getDay();
+  const w=weekNum(), k=today(), dd=day(k);
+
+  if(dow===0){
+    host.innerHTML=`<div class="rest-day">
+      <div class="eyebrow">${DAYS[0]}</div>
+      <h1>DESCANSO</h1>
+      <p>Obligatorio, no opcional. Con seis días de entrenamiento, hoy es donde el cuerpo cobra el trabajo de la semana. El handstand se aprende durmiendo.</p>
+    </div>
+    <div class="note" style="margin-top:20px">Aprovecha para: pesarte en ayunas, revisar los videos de la semana y actualizar tus escaleras en <b>Skills</b>.</div>`;
+    return;
+  }
+
+  const S=SESSIONS[dow];
+  let items=[];
+  S.blocks.forEach((b,bi)=>b.items.forEach((it,ii)=>{if(!it.from||w>=it.from)items.push(bi+'-'+ii);}));
+  const doneN=items.filter(id=>(dd.sets[id]||0)>0).length;
+  const pct=items.length?Math.round(doneN/items.length*100):0;
+
+  let h=`<div class="hero">
+    <div class="hero-top">
+      <div style="flex:1">
+        <div class="eyebrow">${DAYS[dow]} · Semana ${w}</div>
+        <h1>${S.name.toUpperCase()}</h1>
+        <div class="hero-sub">${S.focus}</div>
+      </div>
+      <div class="place ${S.place}">${S.place==='casa'?'🏠 Casa':'🌳 Parque'}</div>
+    </div>
+    <div class="bar-meter"><i style="width:${pct}%"></i></div>
+    <div class="hero-foot"><span class="mono">${doneN}/${items.length} ejercicios</span><span class="mono">${S.blocks.reduce((a,b)=>a+b.min,0)} min</span></div>
+  </div>`;
+
+  if(w<=2) h+=`<div class="note"><b>Semanas 1–2: haz el 60% del volumen.</b> Te vas a sentir capaz de más — no lo hagas. Después de mes y medio de pausa, pasarte cuesta otra semana de agujetas.</div>`;
+  if(w===1) h+=`<div class="note warn"><b>Semana de retest.</b> Antes de programar nada, mide tus máximos reales en la pestaña Registro. Tres días separados.</div>`;
+  if(isDeload(w)) h+=`<div class="note warn"><b>Semana de descarga.</b> Mitad del volumen, cero trabajo al límite. Aquí es donde el cuerpo cobra las adaptaciones — no es opcional.</div>`;
+  if(w>=5&&w<=8) h+=`<div class="note"><b>Bloque 2:</b> entra el lastre y las transiciones de muscle-up.</div>`;
+  if(w>=9) h+=`<div class="note"><b>Bloque 3 · peak:</b> intentos completos siempre frescos, al inicio de la sesión.</div>`;
+
+  h+=`<div class="tpick"><button data-t="60">60 s</button><button data-t="90">90 s</button><button data-t="120">2 min</button><button data-t="180">3 min</button></div>`;
+
+  S.blocks.forEach((b,bi)=>{
+    const vis=b.items.filter((it)=>!it.from||w>=it.from);
+    if(!vis.length)return;
+    h+=`<div class="blk" data-b="${bi}">
+      <div class="blk-h"><div class="blk-tag">${b.tag}</div><div class="blk-t">${b.t}</div><div class="blk-min">${b.min}′</div><div class="chev">▼</div></div>
+      <div class="blk-body">`;
+    b.items.forEach((it,ii)=>{
+      if(it.from&&w<it.from)return;
+      const id=bi+'-'+ii, n=dd.sets[id]||0;
+      h+=`<div class="ex ${n>0?'done':''}" data-id="${id}">
+        <div class="ex-h"><div class="ex-n">${it.n}</div><div class="ex-p">${it.p}</div></div>
+        ${it.cue?`<div class="cue">${it.cue}</div>`:''}
+        <div class="tally-row">
+          <div class="tally" data-inc="${id}">${n>0?tallySVG(n):'<span class="tally-empty">TOCA PARA MARCAR UNA SERIE</span>'}</div>
+          <div class="setcount">${n>0?n+' ser':''}</div>
+          ${n>0?`<button class="minus" data-dec="${id}">−</button>`:''}
+        </div>
+        <input class="exnote" data-note="${id}" placeholder="peso, reps, cómo se sintió…" value="${(dd.notes[id]||'').replace(/"/g,'&quot;')}">
+      </div>`;
+    });
+    h+=`</div></div>`;
+  });
+
+  h+=`<button class="btn ${dd.fin?'done':'blue'}" id="finBtn">${dd.fin?'✓ SESIÓN TERMINADA':'TERMINAR SESIÓN'}</button>
+      <footer>Skills primero, fuerza después, accesorios al final.</footer>`;
+  host.innerHTML=h;
+}
+
+/* marcas de conteo — como en el parque */
+function tallySVG(n){
+  let out='';
+  const groups=Math.floor(n/5), rest=n%5;
+  for(let g=0;g<groups;g++) out+=`<svg width="30" height="22" viewBox="0 0 30 22"><g stroke="#15171A" stroke-width="2" stroke-linecap="round">
+    <path d="M3 3v16"/><path d="M9 3v16"/><path d="M15 3v16"/><path d="M21 3v16"/><path d="M1 17L25 4"/></g></svg>`;
+  if(rest){
+    let p='';for(let i=0;i<rest;i++)p+=`<path d="M${3+i*6} 3v16"/>`;
+    out+=`<svg width="${rest*6}" height="22" viewBox="0 0 ${rest*6} 22"><g stroke="#15171A" stroke-width="2" stroke-linecap="round">${p}</g></svg>`;
+  }
+  return out;
+}
+
+/* ============================================================
+   RENDER · SKILLS
+   ============================================================ */
+function renderLadders(){
+  const host=document.getElementById('ladders');
+  host.innerHTML=LADDERS.map(L=>{
+    const cur=D.skills[L.id]??-1;
+    const pct=Math.round(((cur+1)/L.rungs.length)*100);
+    return `<div class="ladder-card">
+      <div class="ld-h">
+        <div style="flex:1"><h3>${L.n}</h3><div class="ld-goal">${L.goal}</div></div>
+        <div style="text-align:right"><div class="ld-pct">${pct}%</div></div>
+      </div>
+      <div class="rungs">
+        ${L.rungs.map((r,i)=>`<div class="rung ${i<cur?'filled':i===cur?'cur filled':''}" data-sk="${L.id}" data-i="${i}">
+          <span class="rung-i">${i+1}</span><div class="rung-bar"></div><div class="rung-t">${r}</div>
+        </div>`).join('')}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ============================================================
+   RENDER · REGISTRO
+   ============================================================ */
+function renderLog(){
+  const w=weekNum();
+  const rn=document.getElementById('retestNote');
+  if(w===1) rn.innerHTML='<div class="note warn"><b>Toca retest esta semana.</b> Descansa un día entre cada test. No uses tus números viejos (10 / 27 / 16): seis semanas de pausa cuestan 15–25% de fuerza.</div>';
+  else if(w===6||w===12) rn.innerHTML='<div class="note warn"><b>Retest de fin de bloque.</b> Descansa 2 días antes. Espera mejorar 20–30% desde la última medición.</div>';
+  else rn.innerHTML='';
+
+  const th=document.getElementById('testHist');
+  if(!D.tests.length){th.innerHTML='<div class="card-pad" style="border-top:1px solid var(--line);font-size:13px;color:var(--muted)">Sin mediciones todavía. La primera es tu línea base — sin ella el plan va a ciegas.</div>';}
+  else{
+    th.innerHTML='<div class="card-pad hist" style="border-top:1px solid var(--line);padding-top:4px">'+
+      D.tests.slice().reverse().map(t=>`<div><span>${t.d}</span><span>${[t.pu&&t.pu+' PU',t.pf&&t.pf+' PF',t.dp&&t.dp+' DP',t.hs&&t.hs+'s HS',t.ct&&t.ct+'cm'].filter(Boolean).join(' · ')}</span></div>`).join('')+'</div>';
+  }
+  drawSpark();
+}
+function drawSpark(){
+  const s=document.getElementById('wSpark'), st=document.getElementById('wStat');
+  const W=D.weight;
+  if(W.length<2){s.innerHTML='';st.textContent=W.length?`Último: ${W[W.length-1].v} kg · faltan más datos para una línea`:'Registra tu peso para ver la tendencia.';return;}
+  const vals=W.map(x=>x.v), mn=Math.min(...vals)-.4, mx=Math.max(...vals)+.4, rg=mx-mn||1;
+  const pts=vals.map((v,i)=>`${(i/(vals.length-1))*298+1},${50-((v-mn)/rg)*46}`).join(' ');
+  s.innerHTML=`<polyline points="${pts}" fill="none" stroke="#1F3BE8" stroke-width="2" stroke-linejoin="round"/>`+
+    vals.map((v,i)=>`<circle cx="${(i/(vals.length-1))*298+1}" cy="${50-((v-mn)/rg)*46}" r="2.5" fill="#1F3BE8"/>`).join('');
+  const d=vals[vals.length-1]-vals[0];
+  st.textContent=`${vals[0]} → ${vals[vals.length-1]} kg · ${d>0?'+':''}${d.toFixed(1)} kg en ${W.length} registros`;
+}
+
+/* ============================================================
+   RENDER · COMIDA
+   ============================================================ */
+function renderFuel(){
+  const d=day(today());
+  const p=Math.max(0,d.prot), wa=Math.max(0,d.water);
+  document.getElementById('pNum').textContent=p;
+  document.getElementById('wNum').textContent=wa.toFixed(2).replace(/\.?0+$/,'')||0;
+  const pb=document.getElementById('pBar'), wb=document.getElementById('wBar');
+  pb.firstElementChild.style.width=Math.min(100,p/150*100)+'%';
+  wb.firstElementChild.style.width=Math.min(100,wa/3.5*100)+'%';
+  pb.classList.toggle('full',p>=150); wb.classList.toggle('full',wa>=3.5);
+  document.getElementById('creaTog').classList.toggle('on',!!d.crea);
+}
+
+/* ============================================================
+   RENDER · PLAN
+   ============================================================ */
+function renderPlan(){
+  document.getElementById('weekTable').innerHTML=
+    '<tr><th>Día</th><th>Dónde</th><th>Enfoque</th></tr>'+
+    [1,2,3,4,5,6].map(i=>`<tr><td><b>${DAYS[i]}</b></td><td>${SESSIONS[i].place==='casa'?'🏠':'🌳'}</td><td>${SESSIONS[i].name} — ${SESSIONS[i].focus}</td></tr>`).join('')+
+    '<tr><td><b>Domingo</b></td><td>—</td><td>Descanso obligatorio</td></tr>';
+  document.getElementById('equipList').innerHTML=EQUIP.map(e=>
+    `<div class="chk ${D.equip[e.id]?'on':''}" data-eq="${e.id}"><div class="box"></div><div class="chk-t">${e.t}<span class="chk-s">${e.s}</span></div></div>`).join('');
+  document.getElementById('startD').value=D.start||'';
+}
+
+/* ============================================================
+   EVENTOS
+   ============================================================ */
+document.addEventListener('click',e=>{
+  const t=e.target;
+
+  const nav=t.closest('nav button');
+  if(nav){
+    document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b===nav));
+    document.querySelectorAll('.view').forEach(v=>v.classList.remove('on'));
+    document.getElementById('v-'+nav.dataset.v).classList.add('on');
+    window.scrollTo(0,0);
+    if(nav.dataset.v==='log')renderLog();
+    if(nav.dataset.v==='fuel')renderFuel();
+    return;
+  }
+
+  const bh=t.closest('.blk-h'); if(bh){bh.parentElement.classList.toggle('closed');return;}
+
+  const inc=t.closest('[data-inc]');
+  if(inc){const id=inc.dataset.inc,d=day(today());d.sets[id]=(d.sets[id]||0)+1;save();renderHoy();startTimer(90);return;}
+  const dec=t.closest('[data-dec]');
+  if(dec){const id=dec.dataset.dec,d=day(today());d.sets[id]=Math.max(0,(d.sets[id]||0)-1);save();renderHoy();return;}
+
+  const tp=t.closest('.tpick button'); if(tp){startTimer(+tp.dataset.t);return;}
+
+  if(t.id==='finBtn'){const d=day(today());d.fin=!d.fin;save();renderHoy();return;}
+
+  const rg=t.closest('[data-sk]');
+  if(rg){const id=rg.dataset.sk,i=+rg.dataset.i;D.skills[id]=(D.skills[id]===i)?i-1:i;save();renderLadders();return;}
+
+  const q=t.closest('[data-p]');
+  if(q){const d=day(today());d.prot=Math.max(0,d.prot+ +q.dataset.p);save();renderFuel();return;}
+  const qw=t.closest('[data-w]');
+  if(qw){const d=day(today());d.water=Math.max(0,Math.round((d.water+ +qw.dataset.w)*100)/100);save();renderFuel();return;}
+  if(t.closest('#creaTog')){const d=day(today());d.crea=!d.crea;save();renderFuel();return;}
+
+  const eq=t.closest('[data-eq]');
+  if(eq){const id=eq.dataset.eq;D.equip[id]=!D.equip[id];save();renderPlan();return;}
+
+  if(t.id==='saveTest'){
+    const g=i=>{const v=document.getElementById(i).value;return v===''?null:+v;};
+    const rec={d:today(),pu:g('t_pu'),pf:g('t_pf'),dp:g('t_dp'),hs:g('t_hs'),hb:g('t_hb'),ct:g('t_ct')};
+    if(!rec.pu&&!rec.pf&&!rec.dp&&!rec.hs&&!rec.hb&&!rec.ct){alert('Escribe al menos un valor antes de guardar.');return;}
+    D.tests.push(rec);save();
+    ['t_pu','t_pf','t_dp','t_hs','t_hb','t_ct'].forEach(i=>document.getElementById(i).value='');
+    renderLog();return;
+  }
+  if(t.id==='saveW'){
+    const v=+document.getElementById('w_in').value;
+    if(!v){alert('Escribe tu peso en kg.');return;}
+    D.weight.push({d:today(),v:Math.round(v*10)/10});save();
+    document.getElementById('w_in').value='';renderLog();return;
+  }
+  if(t.id==='resetAll'){
+    if(confirm('Se borra todo: sesiones, tests, peso y escaleras. No se puede deshacer.')){
+      D={start:today(),daily:{},tests:[],weight:[],skills:{},equip:{}};
+      Store.set(KEY,JSON.stringify(D));renderAll();
+    }
+    return;
+  }
+});
+
+document.addEventListener('input',e=>{
+  if(e.target.dataset.note!=null){day(today()).notes[e.target.dataset.note]=e.target.value;save();}
+});
+document.addEventListener('change',e=>{
+  if(e.target.id==='startD'&&e.target.value){D.start=e.target.value;save();renderAll();}
+});
+
+/* ---------- rest timer ---------- */
+let tv=null;
+function startTimer(sec){
+  clearInterval(tv);
+  const box=document.getElementById('timer'),n=document.getElementById('timerN'),bar=document.getElementById('timerBar');
+  box.classList.add('on');let left=sec;
+  const paint=()=>{n.textContent=Math.floor(left/60)+':'+String(left%60).padStart(2,'0');bar.style.width=(left/sec*100)+'%';};
+  paint();
+  tv=setInterval(()=>{left--;paint();if(left<=0){clearInterval(tv);box.classList.remove('on');
+    if(navigator.vibrate)navigator.vibrate([180,90,180]);}},1000);
+}
+document.getElementById('timerStop').onclick=()=>{clearInterval(tv);document.getElementById('timer').classList.remove('on');};
+
+/* ============================================================
+   ARRANQUE
+   ============================================================ */
+function renderAll(){renderTop();renderHoy();renderLadders();renderLog();renderFuel();renderPlan();}
+
+(async()=>{
+  const raw=await Store.get(KEY);
+  if(raw){try{D=Object.assign(D,JSON.parse(raw));}catch(e){}}
+  if(!D.start){D.start=today();save();}
+  D.daily=D.daily||{};D.skills=D.skills||{};D.equip=D.equip||{};D.tests=D.tests||[];D.weight=D.weight||[];
+  renderAll();
+})();
+
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+}
+</script>
+</body>
+</html>

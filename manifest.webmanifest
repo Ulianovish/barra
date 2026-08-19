@@ -1,0 +1,17 @@
+{
+  "name": "BARRA · Calistenia",
+  "short_name": "BARRA",
+  "description": "Seguimiento del plan de 12 semanas: muscle-up y handstand push-up",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#D7D8D2",
+  "theme_color": "#15171A",
+  "lang": "es",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
