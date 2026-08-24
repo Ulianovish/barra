@@ -91,6 +91,19 @@ main{padding:16px;max-width:640px;margin:0 auto}
 .exc-n{font-family:'Anton','Arial Narrow',sans-serif;font-size:clamp(27px,8.5vw,40px);line-height:.92;text-transform:uppercase;text-wrap:balance}
 .exc-p{font-family:'Space Mono',ui-monospace,monospace;font-size:21px;font-weight:700;color:var(--amber)}
 .exc-cue{font-size:14px;line-height:1.45;color:var(--muted);text-wrap:pretty}
+.howbtn{width:100%;height:44px;border:1px solid var(--line);border-radius:var(--r);background:none;color:var(--muted);
+  font-family:'Space Mono',ui-monospace,monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;
+  display:flex;align-items:center;justify-content:space-between;padding:0 13px;cursor:pointer}
+.howbtn.on{border-color:var(--teal);color:var(--teal)}
+.howbtn svg{transition:transform .2s}
+.howbtn.on svg{transform:rotate(180deg)}
+.howpanel{display:none;flex-direction:column;gap:11px;border-left:3px solid var(--teal);background:#1B2226;
+  padding:12px 13px;border-radius:0 var(--r) var(--r) 0}
+.howpanel.on{display:flex}
+.howpanel p{margin:0;font-size:13.5px;line-height:1.5;color:var(--ink);text-wrap:pretty}
+.howpanel video{width:100%;display:block;border-radius:var(--r);background:#000}
+.slab.small{height:150px}
+.slab.small .tg{height:44px}
 
 .slab{height:208px;border:2px solid var(--line);border-radius:var(--r);background:var(--surface);
   display:flex;flex-direction:column;overflow:hidden;margin-bottom:10px}
@@ -596,6 +609,82 @@ function blockNum(w){return w<=4?1:w<=8?2:3;}
 function isDeload(w){return w===8||w===12;}
 
 /* ============================================================
+   CÓMO SE HACE
+   Texto largo por ejercicio. Solo los que tienen técnica que romper:
+   donde el nombre ya lo dice todo, no hay entrada y no sale el botón.
+   CLIP registra el archivo de vídeo en media/ cuando lo grabes.
+   ============================================================ */
+const CLIP={};
+const HOWTO={
+ 'Círculos y extensión de muñeca':'Palmas en el suelo con los dedos hacia las rodillas y balancea el peso atrás hasta notar el estiramiento. Después dedos hacia delante y dorso de la mano al suelo. Diez círculos en cada sentido, sin prisa.',
+ 'Band pull-aparts':'Banda a la altura del pecho, brazos casi extendidos. Abre llevando las escápulas al centro, no tirando con las manos. Vuelve despacio, controlando.',
+ 'Dislocates con banda':'Agarre ancho y brazos rectos. Pasa la banda de delante a atrás por encima de la cabeza sin doblar los codos. Si el hombro molesta, separa más las manos.',
+ 'Wall slides + escápulas':'Espalda, lumbar y antebrazos pegados a la pared. Sube los brazos sin despegar nada: cuando algo se despega, ahí está tu tope de hoy.',
+ 'Colgar pasivo y activo':'Pasivo: cuélgate relajado, hombros hacia las orejas. Activo: sin doblar codos, hunde los hombros hacia abajo. Alterna diez segundos de cada.',
+ 'Scapular pulls':'Colgado con los brazos rectos, sube el cuerpo solo bajando las escápulas. Los codos no se doblan. El recorrido es de dos dedos.',
+ 'Pike push-up ligero':'Cadera alta, cuerpo en V invertida, y baja la coronilla al suelo entre las manos. Solo para entrar en calor: nada de acercarse al fallo.',
+ 'Handstand pecho a la pared':'Sube de espaldas a la pared y camina con los pies hasta quedar con el pecho pegado. Costillas metidas, glúteo apretado, hombros empujando hacia las orejas. La versión de espalda a la pared enseña a arquearse, justo lo contrario de lo que buscas.',
+ 'Wall walks':'Empieza en plancha con los pies contra la pared. Camina con las manos hacia la pared mientras los pies suben, hasta quedar casi vertical. Baja igual de controlado.',
+ 'High pull-ups':'Pull-up explosivo buscando llevar el pecho —no la barbilla— por encima de la barra. Tira fuerte desde abajo; si llegas justo a la barbilla, todavía no es alto.',
+ 'Transición negativa':'Empieza apoyado sobre la barra con los brazos rectos y baja despacio pasando por la transición hasta quedar colgado. Bajar controlado es lo que te enseña el camino de subida.',
+ 'Muscle-up asistido (banda o salto)':'Banda bajo los pies o un pequeño salto. Tira con el pecho hacia la barra y gira las muñecas por encima en cuanto pases. No es fuerza de bíceps: es tirar alto y pasar rápido.',
+ 'L-sit en parallettes':'Hombros hundidos, brazos rectos y bloqueados, piernas juntas y extendidas al frente. Si no llegas, empieza con las rodillas al pecho.',
+ 'Tuck front lever':'Colgado con los brazos rectos y las rodillas al pecho. Lleva la espalda a la horizontal tirando de la barra hacia los pies. Los brazos no se doblan.',
+ 'Skin the cat':'Colgado de anillas o barra, sube las rodillas y pasa las piernas entre los brazos hasta quedar boca abajo. Muy despacio la primera vez.',
+ 'Tuck planche hold':'Manos en el suelo o en parallettes, con los hombros por delante de las manos. Rodillas al pecho y cadera alta. Empuja el suelo lejos de ti.',
+ 'Sentadilla búlgara':'Pie de atrás en un banco y la carga en la pierna de delante. Baja hasta que el muslo quede paralelo al suelo. La rodilla sigue la dirección del pie.',
+ 'Progresión de pistol squat':'Baja a una pierna con la otra extendida al frente. Empieza sentándote en una caja alta y ve bajando la altura. El talón no se despega.',
+ 'Back lever tuck negativa':'Desde skin the cat, con las rodillas al pecho, baja despacio hasta la horizontal. Brazos rectos todo el recorrido.',
+ 'Pike push-up elevado':'Pies en una silla o la cama y cadera alta. Baja la coronilla al suelo entre las manos. Rango completo o no cuenta.',
+ 'Dips en paralelas':'Pecho ligeramente adelante, hombros abajo y atrás. Baja hasta que el hombro quede por debajo del codo. Si el hombro se va hacia la oreja, has bajado de más.',
+ 'Pull-up estricto':'Sin balanceo. Empieza colgado con los brazos rectos y sube hasta pasar la barbilla. Baja hasta extender del todo: media repetición no cuenta.',
+ 'Pull-up agarre ancho':'Manos más abiertas que los hombros. Lleva el pecho a la barra con los codos hacia abajo y atrás.',
+ 'Chin-up o archer pull-up':'Chin-up: palmas hacia ti, más bíceps y más fácil. Archer: un brazo tira mientras el otro se extiende de lado casi recto.',
+ 'Remo invertido, pies elevados':'Barra baja o anillas, cuerpo recto como una tabla y pies en alto. Tira llevando el esternón a la barra y junta las escápulas al final.',
+ 'Ring dip o dip lastrado':'En anillas, gira las palmas hacia dentro al final del empuje. Lastrado, con mochila o cinturón, empieza en +5 kg.',
+ 'Pseudo planche push-up':'Push-up con las manos a la altura de la cadera y los dedos apuntando atrás. Inclina los hombros por delante de las manos.',
+ 'Nordic curl':'Rodillas apoyadas y tobillos sujetos. Baja el tronco recto todo lo que aguantes y frena con las manos. La cadera no se dobla.',
+ 'Puente de glúteo a una pierna':'Un pie en el suelo y el otro extendido. Sube la cadera apretando el glúteo, sin arquear la lumbar.',
+ 'Push-up diamante':'Manos juntas formando un rombo bajo el pecho. Codos rozando el costado, nunca abiertos.',
+ 'Archer push-up':'Manos muy separadas. Baja hacia un lado doblando ese codo mientras el otro brazo se mantiene extendido.',
+ 'Face pulls con banda':'Banda a la altura de la cara. Tira separando las manos y llevando los codos altos y atrás, hasta terminar con los nudillos junto a las orejas.',
+ 'Elevación lateral con banda':'Banda corta bajo los pies. Sube los brazos a los lados hasta la altura del hombro, sin balanceo.',
+ 'Dragon flag negativa':'Tumbado y agarrado detrás de la cabeza. Sube el cuerpo recto apoyado en los omóplatos y baja despacio sin doblar la cadera.',
+ 'Windshield wipers colgado':'Colgado con las piernas arriba, bájalas a un lado y al otro controlando. Sin coger balanceo.',
+ 'Remo en anillas, pies elevados':'Anillas bajas, pies en alto y cuerpo recto. Tira llevando las anillas al costado con los codos pegados.',
+ 'Hollow body hold':'Lumbar completamente pegada al suelo. Brazos y piernas extendidos, hombros y talones despegados. Si la espalda se despega, acorta las piernas.',
+ 'Rueda abdominal':'Sin arquear la lumbar. Rueda hasta donde puedas mantener la cadera metida y vuelve. Si la espalda cede, acorta el recorrido.',
+ 'Leg raises colgado':'Colgado, sube las piernas rectas hasta la horizontal sin balanceo y baja controlando.',
+ 'Pallof press con banda':'Banda a un lado, a la altura del pecho. Extiende los brazos al frente resistiendo la rotación: el tronco no gira.',
+ 'Plancha lateral':'Apoyo en antebrazo y canto del pie, cadera alta y cuerpo en línea. No dejes caer la cadera.',
+ 'Cuclillas profundas':'Baja del todo con los talones en el suelo. Aguanta abajo y empuja las rodillas hacia fuera con los codos.'
+};
+
+/* Series de ese ejercicio en todo el histórico. Los identificadores son
+   posicionales y cambian según el día, así que hay que contar por nombre. */
+function seenSets(name){
+  let n=0;
+  for(const k in D.daily){
+    const S=SESSIONS[new Date(k+'T00:00:00').getDay()];
+    if(!S)continue;
+    const sets=D.daily[k].sets||{};
+    for(const id in sets){
+      const a=id.split('-'), b=S.blocks[+a[0]], it=b&&b.items[+a[1]];
+      if(it&&it.n===name)n+=sets[id];
+    }
+  }
+  return n;
+}
+/* Abierto mientras estés aprendiendo el ejercicio; después se pliega solo.
+   Un toque manda sobre el automático durante lo que queda de sesión. */
+let howManual={};
+const APRENDIDO=12;
+function howOpen(name){
+  if(howManual[name]!=null)return howManual[name];
+  return seenSets(name)<APRENDIDO;
+}
+
+/* ============================================================
    UTILIDADES DE RENDER
    ============================================================ */
 const esc=s=>String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
@@ -632,8 +721,12 @@ function exList(){
   }));
   return out;
 }
-let curEx=null;
+let curEx=null, curDay=null;
+/* El ejercicio en pantalla queda fijado por renderHoy. Si se recalculara en
+   cada toque avanzaría solo mientras la tarjeta se queda quieta, y acabarías
+   registrando series en un ejercicio que no estás viendo. */
 function curIdx(L){
+  if(curDay!==today()){curDay=today();curEx=null;}
   if(curEx!=null&&curEx<L.length)return curEx;
   const dd=day(today());
   const i=L.findIndex(e=>(dd.sets[e.id]||0)<e.target);
@@ -689,6 +782,18 @@ function pipsHTML(L,dd,i){
   }).join('');
 }
 function doneCount(L,dd){return L.filter(e=>(dd.sets[e.id]||0)>=e.target).length;}
+function howAbierto(e){return (HOWTO[e.n]||CLIP[e.n])?howOpen(e.n):false;}
+function howHTML(e){
+  const txt=HOWTO[e.n], clip=CLIP[e.n];
+  if(!txt&&!clip)return '';
+  const on=howOpen(e.n);
+  return '<button class="howbtn'+(on?' on':'')+'" id="howBtn">Cómo se hace'+
+    '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>'+
+    '<div class="howpanel'+(on?' on':'')+'">'+
+      (clip?'<video src="media/'+esc(clip)+'" muted loop playsinline autoplay preload="none"></video>':'')+
+      (txt?'<p>'+esc(txt)+'</p>':'')+
+    '</div>';
+}
 
 function fuelStripHTML(dd){
   const fp=Math.max(0,150-(dd.prot||0)), fa=Math.max(0,3.5-(dd.water||0));
@@ -717,6 +822,7 @@ function renderHoy(){
   }
 
   const S=SESSIONS[dow], L=exList(), i=curIdx(L), e=L[i];
+  curEx=i;
   if(!e){host.innerHTML='<div class="restday"><div class="disp">Sin sesión</div></div>';return;}
   const n=dd.sets[e.id]||0, last=i===L.length-1;
 
@@ -739,13 +845,14 @@ function renderHoy(){
     '<div class="exc-n">'+esc(e.n)+'</div>'+
     '<div class="exc-p">'+esc(e.p)+'</div>'+
     (e.cue?'<div class="exc-cue">'+esc(e.cue)+'</div>':'')+
+    howHTML(e)+
   '</div>';
 
-  h+='<div class="slab">'+
+  h+='<div class="slab'+(howAbierto(e)?' small':'')+'">'+
       '<button class="slab-hit" id="slabHit">'+tallyHTML(n)+'</button>'+
       '<div class="slab-foot">'+
         '<button class="slab-undo" id="slabUndo" aria-label="Quitar una serie"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9BA2A9" stroke-width="2.2" stroke-linecap="round"><path d="M5 12h14"/></svg></button>'+
-        '<div class="slab-cnt" id="slabCnt">'+n+' DE '+e.target+' SERIES</div>'+
+        '<div class="slab-cnt" id="slabCnt">'+n+' DE '+e.target+(e.target===1?' SERIE':' SERIES')+'</div>'+
       '</div></div>';
 
   h+='<div class="restbox" id="restBox">'+
@@ -775,7 +882,7 @@ function paintSets(){
   const hit=document.getElementById('slabHit');
   if(hit)hit.innerHTML=tallyHTML(n);
   const cnt=document.getElementById('slabCnt');
-  if(cnt)cnt.textContent=n+' DE '+e.target+' SERIES';
+  if(cnt)cnt.textContent=n+' DE '+e.target+(e.target===1?' SERIE':' SERIES');
   document.getElementById('topSubR').innerHTML=doneCount(L,dd)+'<span>/'+L.length+'</span>';
   const p=document.getElementById('pips');
   if(p)p.innerHTML=pipsHTML(L,dd,i);
@@ -988,11 +1095,29 @@ document.addEventListener('click',e=>{
 
   if(t.closest('#slabHit')){
     const L=exList(),i=curIdx(L),ex=L[i],d=day(today());
-    d.sets[ex.id]=(d.sets[ex.id]||0)+1;save();paintSets();startTimer(ex.rest[0],ex.rest[1]);return;
+    const n=(d.sets[ex.id]||0)+1;
+    d.sets[ex.id]=n;save();
+    /* Al completar las series del ejercicio, salta al siguiente que quede
+       pendiente. Series de más no hacen saltar: a veces se añade una. */
+    if(n===ex.target){
+      const next=L.findIndex((x,k)=>k>i&&(d.sets[x.id]||0)<x.target);
+      curEx=next>=0?next:i;
+      renderHoy();
+    }else{
+      paintSets();
+    }
+    startTimer(ex.rest[0],ex.rest[1]);
+    return;
   }
   if(t.closest('#slabUndo')){
     const L=exList(),i=curIdx(L),ex=L[i],d=day(today());
     d.sets[ex.id]=Math.max(0,(d.sets[ex.id]||0)-1);save();paintSets();return;
+  }
+  if(t.closest('#howBtn')){
+    const L=exList(),i=curIdx(L),e=L[i];
+    howManual[e.n]=!howOpen(e.n);
+    renderHoy();
+    return;
   }
   if(t.closest('#restAdj')){document.getElementById('restBox').classList.toggle('open');return;}
   const tp=t.closest('.presets button');
