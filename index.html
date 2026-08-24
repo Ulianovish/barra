@@ -135,7 +135,13 @@ main{padding:var(--pad);max-width:640px;margin:0 auto}
   background:var(--ink);color:var(--concrete);display:none;align-items:center;gap:12px;padding:10px 14px}
 .timer.on{display:flex}
 .timer-n{font-family:'JetBrains Mono';font-size:24px;font-weight:700;min-width:66px}
-.timer-bar{flex:1;height:4px;background:#31363D}
+.timer-mid{flex:1;display:flex;flex-direction:column;gap:5px}
+.timer-t{font-family:'JetBrains Mono';font-size:10px;letter-spacing:.06em;color:#9AA0A6}
+.timer.ready .timer-n{color:#7FD39B}
+.timer.ready .timer-t{color:#7FD39B}
+.timer.ready .timer-bar i{background:var(--ok)}
+.rest{font-family:'JetBrains Mono';font-size:11px;color:var(--muted);margin-top:3px;text-align:right}
+.timer-bar{height:4px;background:#31363D}
 .timer-bar i{display:block;height:100%;background:var(--cobalt)}
 .timer button{background:none;border:1px solid #5C636B;color:var(--concrete);border-radius:2px;padding:6px 10px;font-size:12px;cursor:pointer}
 .tpick{display:flex;gap:6px;margin:2px 0 12px}
@@ -382,6 +388,18 @@ footer{padding:26px 4px 10px;font-size:11.5px;color:var(--muted);text-align:cent
 
     <div class="card">
       <div class="card-pad">
+        <h3 style="font-size:16px;margin:0 0 3px">Copia de seguridad</h3>
+        <p style="font-size:12.5px;color:var(--muted);margin:0 0 11px">Tus datos viven solo en este teléfono. Exporta de vez en cuando, y sobre todo antes de cambiar de móvil o de borrar datos del navegador.</p>
+        <button class="btn ghost" id="expBtn">Exportar a un archivo</button>
+        <div style="height:8px"></div>
+        <button class="btn ghost" id="impBtn">Importar desde un archivo</button>
+        <input type="file" id="impFile" accept="application/json,.json" style="display:none">
+        <div id="ioMsg" style="font-size:12.5px;color:var(--muted);margin-top:10px"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-pad">
         <h3 style="font-size:16px;margin:0 0 3px">Inicio del programa</h3>
         <p style="font-size:12.5px;color:var(--muted);margin:0 0 11px">Cambiar esto recalcula tu semana actual.</p>
         <div class="fld"><label>Semana 1, día 1</label><input type="date" id="startD" style="font-family:'JetBrains Mono';font-size:14px"></div>
@@ -396,7 +414,10 @@ footer{padding:26px 4px 10px;font-size:11.5px;color:var(--muted);text-align:cent
 
 <div class="timer" id="timer">
   <div class="timer-n" id="timerN">0:00</div>
-  <div class="timer-bar"><i id="timerBar" style="width:100%"></i></div>
+  <div class="timer-mid">
+    <div class="timer-t" id="timerT"></div>
+    <div class="timer-bar"><i id="timerBar" style="width:100%"></i></div>
+  </div>
   <button id="timerStop">Parar</button>
 </div>
 
@@ -433,6 +454,31 @@ const Store={
    DATOS DEL PROGRAMA
    ============================================================ */
 const DAYS=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+
+/* ============================================================
+   DESCANSOS · segundos [mínimo, hasta]
+   El bloque manda; los intentos máximos y los isométricos lo sobrescriben.
+   Regla de fondo: descansa hasta poder repetir la serie con la misma calidad.
+   ============================================================ */
+const REST={W:[30,45],A:[120,180],B:[120,180],C:[60,90],D:[45,60]};
+const MAXATT=/muscle-?up (estricto|completo)|hspu (libre|completo)|intento/i;
+
+function restFor(tag,it){
+  if(it.r)return it.r;
+  if(MAXATT.test(it.n))return [180,300];
+  let base=REST[tag]||[60,90];
+  /* Isométrico: 2-3× lo que aguantas. Solo si la prescripción son segundos. */
+  const m=/(\d+)\s*(?:-\s*(\d+))?\s*s\b/.exec(it.p||'');
+  if(m){
+    const hold=+(m[2]||m[1]), iso=[hold*2,hold*3];
+    if(iso[0]>base[0])base=iso;
+  }
+  return base;
+}
+function fmtRest(r){
+  const u=v=>Number.isInteger(v/60)?v/60:(v/60).toFixed(1).replace('.',',');
+  return r[0]>=120?u(r[0])+'-'+u(r[1])+' min':r[0]+'-'+r[1]+' s';
+}
 
 const SESSIONS={
 1:{name:'Empuje Vertical',focus:'Ruta HSPU',place:'casa',blocks:[
@@ -571,7 +617,21 @@ const EQUIP=[
 /* ============================================================
    ESTADO
    ============================================================ */
-let D={start:null,daily:{},tests:[],weight:[],skills:{},equip:{}};
+const SCHEMA=2;
+let D={v:SCHEMA,start:null,daily:{},tests:[],weight:[],skills:{},equip:{}};
+
+/* Normaliza y sube de versión los datos guardados. Los datos sin `v` son de
+   la primera versión. Cada cambio futuro de forma añade aquí su propio paso. */
+function migrate(o){
+  o=(o&&typeof o==='object')?o:{};
+  o.daily=o.daily||{}; o.skills=o.skills||{}; o.equip=o.equip||{};
+  o.tests=Array.isArray(o.tests)?o.tests:[];
+  o.weight=Array.isArray(o.weight)?o.weight:[];
+  // if(o.v<3){ ...transformar...; }
+  o.v=SCHEMA;
+  return o;
+}
+function ioMsg(txt){const el=document.getElementById('ioMsg');if(el)el.textContent=txt;}
 const today=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');};
 let saveT=null;
 function save(){clearTimeout(saveT);saveT=setTimeout(()=>Store.set(KEY,JSON.stringify(D)),350);}
@@ -653,7 +713,7 @@ function renderHoy(){
       if(it.from&&w<it.from)return;
       const id=bi+'-'+ii, n=dd.sets[id]||0;
       h+=`<div class="ex ${n>0?'done':''}" data-id="${id}">
-        <div class="ex-h"><div class="ex-n">${it.n}</div><div class="ex-p">${it.p}</div></div>
+        <div class="ex-h"><div class="ex-n">${it.n}</div><div><div class="ex-p">${it.p}</div><div class="rest">${fmtRest(restFor(b.tag,it))}</div></div></div>
         ${it.cue?`<div class="cue">${it.cue}</div>`:''}
         <div class="tally-row">
           <div class="tally" data-inc="${id}">${n>0?tallySVG(n):'<span class="tally-empty">TOCA PARA MARCAR UNA SERIE</span>'}</div>
@@ -784,11 +844,17 @@ document.addEventListener('click',e=>{
   const bh=t.closest('.blk-h'); if(bh){bh.parentElement.classList.toggle('closed');return;}
 
   const inc=t.closest('[data-inc]');
-  if(inc){const id=inc.dataset.inc,d=day(today());d.sets[id]=(d.sets[id]||0)+1;save();renderHoy();startTimer(90);return;}
+  if(inc){
+    const id=inc.dataset.inc,d=day(today());d.sets[id]=(d.sets[id]||0)+1;save();renderHoy();
+    const S=SESSIONS[new Date().getDay()],[bi,ii]=id.split('-').map(Number);
+    const b=S&&S.blocks[bi], it=b&&b.items[ii];
+    startTimer(...(it?restFor(b.tag,it):[90,120]));
+    return;
+  }
   const dec=t.closest('[data-dec]');
   if(dec){const id=dec.dataset.dec,d=day(today());d.sets[id]=Math.max(0,(d.sets[id]||0)-1);save();renderHoy();return;}
 
-  const tp=t.closest('.tpick button'); if(tp){startTimer(+tp.dataset.t);return;}
+  const tp=t.closest('.tpick button'); if(tp){startTimer(+tp.dataset.t,+tp.dataset.t);return;}
 
   if(t.id==='finBtn'){const d=day(today());d.fin=!d.fin;save();renderHoy();return;}
 
@@ -818,6 +884,17 @@ document.addEventListener('click',e=>{
     D.weight.push({d:today(),v:Math.round(v*10)/10});save();
     document.getElementById('w_in').value='';renderLog();return;
   }
+  if(t.id==='expBtn'){
+    const name='barra-'+today()+'.json';
+    const blob=new Blob([JSON.stringify(D,null,2)],{type:'application/json'});
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);a.download=name;
+    document.body.appendChild(a);a.click();
+    setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},1000);
+    ioMsg('Exportado como '+name);
+    return;
+  }
+  if(t.id==='impBtn'){document.getElementById('impFile').click();return;}
   if(t.id==='resetAll'){
     if(confirm('Se borra todo: sesiones, tests, peso y escaleras. No se puede deshacer.')){
       D={start:today(),daily:{},tests:[],weight:[],skills:{},equip:{}};
@@ -831,21 +908,60 @@ document.addEventListener('input',e=>{
   if(e.target.dataset.note!=null){day(today()).notes[e.target.dataset.note]=e.target.value;save();}
 });
 document.addEventListener('change',e=>{
-  if(e.target.id==='startD'&&e.target.value){D.start=e.target.value;save();renderAll();}
+  if(e.target.id==='startD'&&e.target.value){D.start=e.target.value;save();renderAll();return;}
+  if(e.target.id==='impFile'&&e.target.files&&e.target.files[0]){
+    const f=e.target.files[0],rd=new FileReader();
+    rd.onload=()=>{
+      let obj=null;
+      try{obj=JSON.parse(rd.result);}catch(err){ioMsg('Ese archivo no es un JSON válido.');return;}
+      if(!obj||typeof obj!=='object'||(obj.daily===undefined&&obj.tests===undefined)){
+        ioMsg('Ese archivo no parece una copia de BARRA.');return;}
+      const dias=Object.keys(obj.daily||{}).length;
+      if(!confirm('Se sustituyen todos tus datos por los del archivo ('+dias+' días registrados). No se puede deshacer.'))return;
+      D=migrate(obj);
+      if(!D.start)D.start=today();
+      save();renderAll();
+      ioMsg('Importados '+dias+' días registrados.');
+    };
+    rd.onerror=()=>ioMsg('No se pudo leer el archivo.');
+    rd.readAsText(f);
+    e.target.value='';
+  }
 });
 
 /* ---------- rest timer ---------- */
 let tv=null;
-function startTimer(sec){
+const mmss=s=>Math.floor(s/60)+':'+String(s%60).padStart(2,'0');
+/* Cuenta atrás hasta el mínimo y luego sigue contando hacia arriba: el aviso
+   dice "ya puedes", no "tienes que". Quien decide es la calidad de la serie. */
+function startTimer(min,max){
   clearInterval(tv);
-  const box=document.getElementById('timer'),n=document.getElementById('timerN'),bar=document.getElementById('timerBar');
-  box.classList.add('on');let left=sec;
-  const paint=()=>{n.textContent=Math.floor(left/60)+':'+String(left%60).padStart(2,'0');bar.style.width=(left/sec*100)+'%';};
+  max=max||min;
+  const box=document.getElementById('timer'),n=document.getElementById('timerN'),
+        bar=document.getElementById('timerBar'),lab=document.getElementById('timerT');
+  box.classList.add('on');box.classList.remove('ready');
+  let t=0;
+  const paint=()=>{
+    if(t<min){
+      const left=min-t;
+      n.textContent=mmss(left);
+      bar.style.width=(left/min*100)+'%';
+      lab.textContent='OBJETIVO '+fmtRest([min,max]).toUpperCase();
+    }else{
+      const extra=t-min;
+      n.textContent='+'+mmss(extra);
+      bar.style.width=(max>min?Math.min(100,extra/(max-min)*100):100)+'%';
+      lab.textContent=t<max?'YA PUEDES · REPITE CON LA MISMA CALIDAD':'LÍMITE ALTO ALCANZADO';
+    }
+  };
   paint();
-  tv=setInterval(()=>{left--;paint();if(left<=0){clearInterval(tv);box.classList.remove('on');
-    if(navigator.vibrate)navigator.vibrate([180,90,180]);}},1000);
+  tv=setInterval(()=>{
+    t++;paint();
+    if(t===min){box.classList.add('ready');if(navigator.vibrate)navigator.vibrate([180,90,180]);}
+    if(t>=max+180)clearInterval(tv);
+  },1000);
 }
-document.getElementById('timerStop').onclick=()=>{clearInterval(tv);document.getElementById('timer').classList.remove('on');};
+document.getElementById('timerStop').onclick=()=>{const b=document.getElementById('timer');clearInterval(tv);b.classList.remove('on');b.classList.remove('ready');};
 
 /* ============================================================
    ARRANQUE
@@ -854,9 +970,11 @@ function renderAll(){renderTop();renderHoy();renderLadders();renderLog();renderF
 
 (async()=>{
   const raw=await Store.get(KEY);
-  if(raw){try{D=Object.assign(D,JSON.parse(raw));}catch(e){}}
-  if(!D.start){D.start=today();save();}
-  D.daily=D.daily||{};D.skills=D.skills||{};D.equip=D.equip||{};D.tests=D.tests||[];D.weight=D.weight||[];
+  let loaded=null;
+  if(raw){try{loaded=JSON.parse(raw);}catch(e){}}
+  D=migrate(Object.assign({},D,loaded||{}));
+  if(!D.start)D.start=today();
+  save();
   renderAll();
 })();
 
