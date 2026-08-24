@@ -1,0 +1,165 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap">
+  <style>
+    body { margin: 0; }
+    a { color: #DCFF4F; } a:hover { color: #c3e33a; }
+  </style>
+</helmet>
+<div style="width: 430px; height: 1090px; background: #0E0F10; color: #F2F4F3; font-family: 'Space Grotesk', system-ui, sans-serif; padding: 22px 20px; display: flex; flex-direction: column; gap: 18px; overflow: hidden; box-sizing: border-box">
+
+  <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 10px; border-bottom: 1px solid #24272A; padding-bottom: 10px">
+    <div style="font-family: 'Anton', 'Arial Narrow', sans-serif; font-size: 21px; text-transform: uppercase">Sesión</div>
+    <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 10px; letter-spacing: .14em; color: #DCFF4F">C · TABLERO</div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 7px">
+    <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 9.5px; letter-spacing: .14em; color: #6E7477">01 · CABECERA DE SESIÓN</div>
+    <div style="font-size: 12.5px; line-height: 1.45; color: #8A8F93; text-wrap: pretty">Series, no ejercicios: 12/37 dice dónde vas mucho mejor que 1/13, porque un ejercicio de cinco series cuenta como uno.</div>
+    <div style="background: #17191B; border: 1px solid #24272A; display: flex; flex-direction: column">
+      <div style="padding: 13px 14px; display: flex; align-items: flex-start; justify-content: space-between; gap: 12px">
+        <div style="display: flex; flex-direction: column; gap: 4px">
+          <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 9.5px; letter-spacing: .14em; color: #8A8F93">LUNES · SEM 01 · CASA</div>
+          <div style="font-family: 'Anton', 'Arial Narrow', sans-serif; font-size: 23px; text-transform: uppercase; line-height: 1">Empuje vertical</div>
+          <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 10.5px; color: #8A8F93">13 ejercicios · 37 series · 60 min</div>
+        </div>
+        <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 15px; font-weight: 700; color: #DCFF4F; white-space: nowrap">{{total}}<span style="color: #6E7477">/37</span></div>
+      </div>
+      <div style="height: 3px; background: #24272A"><div style="height: 100%; width: {{totalPct}}; background: #DCFF4F"></div></div>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 7px">
+    <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 9.5px; letter-spacing: .14em; color: #6E7477">02 · CABECERA DE BLOQUE</div>
+    <div style="font-size: 12.5px; line-height: 1.45; color: #8A8F93; text-wrap: pretty">Deja de plegarse y pasa a quedarse fija al hacer scroll. Plegar escondía trabajo pendiente; fijar dice en qué bloque estás.</div>
+    <div style="background: #DCFF4F; color: #0E0F10; height: 44px; display: flex; align-items: center; gap: 11px; padding: 0 13px">
+      <div style="font-family: 'Anton', 'Arial Narrow', sans-serif; font-size: 15px">B</div>
+      <div style="font-weight: 500; font-size: 13.5px; flex-grow: 1">Fuerza principal</div>
+      <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 11px; font-weight: 700">{{blockTxt}}</div>
+      <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 11px">20′</div>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 7px">
+    <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 9.5px; letter-spacing: .14em; color: #6E7477">03 · EJERCICIO + CONTADOR</div>
+    <div style="font-size: 12.5px; line-height: 1.45; color: #8A8F93; text-wrap: pretty">Una celda por serie prescrita, de 44px: ves cuántas faltan sin contar palitos, y tocas la siguiente. Toca una ya hecha para deshacer.</div>
+    <div style="display: flex; flex-direction: column; gap: 1px; background: #24272A; border: 1px solid #24272A">
+      <sc-for list="{{rows}}" as="r" hint-placeholder-count="3">
+        <div style="background: #17191B; padding: 11px 13px 12px; display: flex; flex-direction: column; gap: 9px">
+          <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 10px">
+            <div style="font-size: 14px; font-weight: 500; color: {{r.ink}}">{{r.name}}</div>
+            <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 12px; font-weight: 700; color: #DCFF4F; white-space: nowrap">{{r.pres}}</div>
+          </div>
+          <div style="display: flex; gap: 4px">
+            <sc-for list="{{r.cells}}" as="c" hint-placeholder-count="4">
+              <div onClick="{{c.tap}}" style="flex-grow: 1; height: 44px; background: {{c.bg}}; border: 1px solid {{c.border}}; display: flex; align-items: center; justify-content: center; cursor: pointer">
+                <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 11px; font-weight: 700; color: {{c.ink}}">{{c.n}}</div>
+              </div>
+            </sc-for>
+          </div>
+          <sc-if value="{{r.cue}}" hint-placeholder-val="{{ true }}">
+            <div style="font-size: 12px; line-height: 1.4; color: #8A8F93">{{r.cue}}</div>
+          </sc-if>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 7px">
+    <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 9.5px; letter-spacing: .14em; color: #6E7477">04 · DESCANSO</div>
+    <div style="font-size: 12.5px; line-height: 1.45; color: #8A8F93; text-wrap: pretty">Barra delgada sobre las pestañas, sin robar altura a la lista. El número en lima solo mientras corre.</div>
+    <div style="background: #17191B; border-top: 1px solid #24272A; height: 52px; display: flex; align-items: center; gap: 12px; padding: 0 13px">
+      <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 19px; font-weight: 700; color: {{restColor}}; min-width: 58px">{{clock}}</div>
+      <div style="flex-grow: 1; height: 3px; background: #24272A"><div style="height: 100%; width: {{restPct}}; background: #DCFF4F"></div></div>
+      <div onClick="{{stop}}" style="height: 34px; padding: 0 12px; border: 1px solid #2E3236; display: flex; align-items: center; font-family: 'Space Mono', ui-monospace, monospace; font-size: 11px; color: #8A8F93; cursor: pointer">Parar</div>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 7px; flex-grow: 1">
+    <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 9.5px; letter-spacing: .14em; color: #6E7477">05 · CIERRE</div>
+    <div style="font-size: 12.5px; line-height: 1.45; color: #8A8F93; text-wrap: pretty">Y el domingo la sesión no existe: la tarjeta se sustituye por lo que sí toca hacer.</div>
+    <div style="display: flex; flex-direction: column; gap: 9px">
+      <div onClick="{{toggleFin}}" style="height: 52px; background: {{finBg}}; color: {{finInk}}; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13.5px; letter-spacing: .1em; cursor: pointer">{{finLabel}}</div>
+      <div style="background: #17191B; border: 1px solid #24272A; padding: 13px 14px; display: flex; flex-direction: column; gap: 6px">
+        <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 9.5px; letter-spacing: .14em; color: #8A8F93">DOMINGO · DESCANSO</div>
+        <div style="font-size: 13px; line-height: 1.45; color: #D5D9DB">Pésate en ayunas, revisa los videos de la semana y actualiza tus escaleras.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":430,"height":1090}}'>
+const ROWS = [
+  { name: 'Pike push-up elevado', pres: '4 × 6-8', target: 4, cue: 'Pies en silla. Cabeza toca el suelo o no cuenta.' },
+  { name: 'Dips en paralelas', pres: '4 × 8-10', target: 4, cue: '' },
+  { name: 'Handstand a la pared', pres: '5 × 20-45 s', target: 5, cue: '' }
+];
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { sets: [3, 0, 5], rest: 0, span: 90, fin: false };
+  }
+  componentWillUnmount() { if (this._t) clearInterval(this._t); }
+  startClock() {
+    if (this._t) return;
+    this._t = setInterval(() => {
+      const r = this.state.rest > 0 ? this.state.rest - 1 : 0;
+      if (r === 0 && this._t) { clearInterval(this._t); this._t = null; }
+      this.setState({ rest: r });
+    }, 1000);
+  }
+  renderVals() {
+    const st = this.state;
+    const rows = ROWS.map((row, k) => {
+      const n = st.sets[k];
+      const cells = [];
+      for (let c = 1; c <= row.target; c++) {
+        const on = c <= n;
+        cells.push({
+          n: c,
+          bg: on ? '#DCFF4F' : '#0E0F10',
+          border: on ? '#DCFF4F' : '#2E3236',
+          ink: on ? '#0E0F10' : '#6E7477',
+          tap: () => {
+            const s = st.sets.slice();
+            s[k] = c === n ? c - 1 : c;
+            this.setState({ sets: s, rest: st.span });
+            this.startClock();
+          }
+        });
+      }
+      return {
+        name: row.name, pres: row.pres, cells: cells, cue: row.cue,
+        ink: n >= row.target ? '#8A8F93' : '#F2F4F3'
+      };
+    });
+    const total = 12 + (st.sets[0] - 3) + st.sets[1] + (st.sets[2] - 5);
+    const r = st.rest;
+    return {
+      rows: rows,
+      total: total,
+      totalPct: Math.round((total / 37) * 100) + '%',
+      blockTxt: (st.sets[0] + st.sets[1]) + '/8',
+      clock: Math.floor(r / 60) + ':' + String(r % 60).padStart(2, '0'),
+      restPct: Math.round((r / st.span) * 100) + '%',
+      restColor: r > 0 ? '#DCFF4F' : '#4A5257',
+      stop: () => { if (this._t) { clearInterval(this._t); this._t = null; } this.setState({ rest: 0 }); },
+      finLabel: st.fin ? 'SESIÓN TERMINADA' : 'TERMINAR SESIÓN',
+      finBg: st.fin ? '#2A3A2E' : '#DCFF4F',
+      finInk: st.fin ? '#8FCB9B' : '#0E0F10',
+      toggleFin: () => this.setState({ fin: !st.fin })
+    };
+  }
+}
+</script>
+</body>
+</html>

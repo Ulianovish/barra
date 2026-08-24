@@ -1,0 +1,96 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap">
+  <style>
+    body { margin: 0; }
+    a { color: #DCFF4F; } a:hover { color: #c3e33a; }
+  </style>
+</helmet>
+<div style="width: 430px; height: 700px; background: #0E0F10; color: #F2F4F3; font-family: 'Space Grotesk', system-ui, sans-serif; padding: 22px 20px; display: flex; flex-direction: column; gap: 18px; overflow: hidden; box-sizing: border-box">
+
+  <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 10px; border-bottom: 1px solid #24272A; padding-bottom: 10px">
+    <div style="font-family: 'Anton', 'Arial Narrow', sans-serif; font-size: 21px; text-transform: uppercase">Skills</div>
+    <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 10px; letter-spacing: .14em; color: #DCFF4F">C · TABLERO</div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 7px">
+    <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 9.5px; letter-spacing: .14em; color: #6E7477">01 · RAÍL DE PROGRESIÓN</div>
+    <div style="font-size: 12.5px; line-height: 1.45; color: #8A8F93; text-wrap: pretty">Horizontal en vez de vertical: las dos escaleras caben juntas y se comparan de un vistazo. El nombre del peldaño actual va debajo.</div>
+    <div style="background: #17191B; border: 1px solid #24272A; padding: 14px; display: flex; flex-direction: column; gap: 15px">
+      <sc-for list="{{skills}}" as="s" hint-placeholder-count="2">
+        <div style="display: flex; flex-direction: column; gap: 8px">
+          <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 10px">
+            <div style="font-size: 14.5px; font-weight: 500">{{s.name}}</div>
+            <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 12px; font-weight: 700; color: #DCFF4F">{{s.step}}</div>
+          </div>
+          <div style="display: flex; gap: 3px">
+            <sc-for list="{{s.rungs}}" as="r" hint-placeholder-count="7">
+              <div onClick="{{r.pick}}" style="flex-grow: 1; height: 44px; background: {{r.bg}}; border: 1px solid {{r.border}}; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 4px; cursor: pointer">
+                <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 9px; color: {{r.ink}}">{{r.i}}</div>
+              </div>
+            </sc-for>
+          </div>
+          <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 10.5px; color: #B9BEC1; line-height: 1.4">{{s.current}}</div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 7px; flex-grow: 1">
+    <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 9.5px; letter-spacing: .14em; color: #6E7477">02 · PELDAÑO · ESTADOS</div>
+    <div style="font-size: 12.5px; line-height: 1.45; color: #8A8F93; text-wrap: pretty">Sin sombras ni glow: relleno para lo hecho, lima para el actual, contorno punteado para el siguiente.</div>
+    <div style="background: #17191B; border: 1px solid #24272A; padding: 14px; display: flex; flex-direction: column; gap: 10px">
+      <div style="display: flex; align-items: center; gap: 12px">
+        <div style="width: 54px; height: 44px; flex: 0 0 54px; background: #4A5257"></div>
+        <div style="font-size: 13px; color: #8A8F93">Hecho · ya lo haces limpio</div>
+      </div>
+      <div style="display: flex; align-items: center; gap: 12px">
+        <div style="width: 54px; height: 44px; flex: 0 0 54px; background: #DCFF4F"></div>
+        <div style="font-size: 13px; color: #F2F4F3; font-weight: 500">Aquí estás</div>
+      </div>
+      <div style="display: flex; align-items: center; gap: 12px">
+        <div style="width: 54px; height: 44px; flex: 0 0 54px; border: 1px dashed #6E7477"></div>
+        <div style="font-size: 13px; color: #8A8F93">Lo siguiente · a lo que apuntas</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":430,"height":700}}'>
+const MU = ['Pull-up estricto × 5', 'Pull-up explosivo al pecho', 'Pull-up al esternón', 'Dip en barra', 'Transición con banda', 'Muscle-up asistido', 'Muscle-up estricto'];
+const HS = ['Pike push-up', 'Pike push-up elevado', 'Handstand 45 s pared', 'HSPU parcial', 'HSPU a la pared', 'HSPU libre'];
+
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { mu: 2, hs: 1 }; }
+  renderVals() {
+    const st = this.state;
+    const build = (list, lvl, set) => ({
+      step: (lvl + 1) + '/' + list.length,
+      current: list[lvl],
+      rungs: list.map((name, k) => ({
+        i: k + 1,
+        bg: k < lvl ? '#4A5257' : k === lvl ? '#DCFF4F' : '#0E0F10',
+        border: k <= lvl ? 'transparent' : k === lvl + 1 ? '#6E7477' : '#24272A',
+        ink: k === lvl ? '#0E0F10' : k < lvl ? '#0E0F10' : '#6E7477',
+        pick: () => set(k === lvl ? k - 1 : k)
+      }))
+    });
+    return {
+      skills: [
+        Object.assign({ name: 'Muscle-up' }, build(MU, st.mu, (v) => this.setState({ mu: Math.max(0, v) }))),
+        Object.assign({ name: 'Handstand push-up' }, build(HS, st.hs, (v) => this.setState({ hs: Math.max(0, v) })))
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

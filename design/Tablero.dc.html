@@ -1,0 +1,191 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap">
+  <style>
+    body { margin: 0; }
+    a { color: #DCFF4F; } a:hover { color: #c3e33a; }
+  </style>
+</helmet>
+<div style="width: 390px; height: 844px; background: #0E0F10; color: #F2F4F3; font-family: 'Space Grotesk', system-ui, sans-serif; display: flex; flex-direction: column; overflow: hidden; box-sizing: border-box">
+
+  <div style="padding: 18px 18px 12px; display: flex; align-items: center; justify-content: space-between; gap: 12px">
+    <div style="font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 17px; letter-spacing: .16em">BARRA</div>
+    <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 10.5px; letter-spacing: .1em; color: #8A8F93">{{weekLabel}}</div>
+  </div>
+
+  <div style="padding: 0 18px 16px; display: flex; flex-direction: column; gap: 7px">
+    <div style="display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 3px">
+      <sc-for list="{{weeks}}" as="w" hint-placeholder-count="12">
+        <div onClick="{{w.pick}}" style="height: 36px; background: {{w.bg}}; border: 1px solid {{w.border}}; display: flex; align-items: center; justify-content: center; cursor: pointer">
+          <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 9px; color: {{w.ink}}">{{w.n}}</div>
+        </div>
+      </sc-for>
+    </div>
+    <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 10px; color: #8A8F93; letter-spacing: .04em">{{weekNote}}</div>
+  </div>
+
+  <div style="margin: 0 18px 14px; background: #17191B; border: 1px solid #24272A; display: flex; flex-direction: column">
+    <div style="padding: 14px 15px 12px; display: flex; align-items: flex-start; justify-content: space-between; gap: 12px">
+      <div style="display: flex; flex-direction: column; gap: 4px">
+        <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 9.5px; letter-spacing: .14em; color: #8A8F93">HOY · LUNES · CASA</div>
+        <div style="font-size: 24px; font-weight: 700; letter-spacing: -.015em; line-height: 1.05">Empuje vertical</div>
+        <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 11px; color: #8A8F93">13 ejercicios · 37 series · 60 min</div>
+      </div>
+      <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 26px; font-weight: 700; color: #DCFF4F; line-height: 1">{{sesPct}}</div>
+    </div>
+    <div style="height: 3px; background: #24272A"><div style="height: 100%; width: {{sesPct}}; background: #DCFF4F"></div></div>
+    <div onClick="{{start}}" style="padding: 15px; text-align: center; cursor: pointer; background: {{startBg}}; color: {{startInk}}; font-weight: 700; font-size: 14px; letter-spacing: .1em">{{startLabel}}</div>
+  </div>
+
+  <div style="padding: 0 18px 14px; display: flex; flex-direction: column; gap: 11px">
+    <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 9.5px; letter-spacing: .14em; color: #8A8F93">ESCALERAS</div>
+    <sc-for list="{{skills}}" as="s" hint-placeholder-count="2">
+      <div style="display: flex; flex-direction: column; gap: 7px">
+        <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 10px">
+          <div style="font-size: 14px; font-weight: 500">{{s.name}}</div>
+          <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 13px; font-weight: 700; color: #DCFF4F">{{s.pct}}</div>
+        </div>
+        <div style="display: flex; gap: 3px">
+          <sc-for list="{{s.rungs}}" as="r" hint-placeholder-count="7">
+            <div onClick="{{r.pick}}" style="flex-grow: 1; height: 30px; background: {{r.bg}}; border: 1px solid {{r.border}}; cursor: pointer"></div>
+          </sc-for>
+        </div>
+        <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 10.5px; color: #B9BEC1">{{s.current}}</div>
+      </div>
+    </sc-for>
+  </div>
+
+  <div style="padding: 0 18px 14px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
+    <div style="background: #17191B; border: 1px solid #24272A; padding: 11px 12px; display: flex; flex-direction: column; gap: 3px">
+      <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 9px; letter-spacing: .12em; color: #8A8F93">PESO</div>
+      <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 17px; font-weight: 700">78,4</div>
+      <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 9.5px; color: #6E7477">−0,6 / 2 sem</div>
+    </div>
+    <div style="background: #17191B; border: 1px solid #24272A; padding: 11px 12px; display: flex; flex-direction: column; gap: 3px">
+      <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 9px; letter-spacing: .12em; color: #8A8F93">PULL-UP</div>
+      <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 17px; font-weight: 700">8</div>
+      <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 9.5px; color: #6E7477">test inicial</div>
+    </div>
+    <div style="background: #17191B; border: 1px solid #24272A; padding: 11px 12px; display: flex; flex-direction: column; gap: 3px">
+      <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 9px; letter-spacing: .12em; color: #8A8F93">DIP</div>
+      <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 17px; font-weight: 700">12</div>
+      <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 9.5px; color: #6E7477">test inicial</div>
+    </div>
+  </div>
+
+  <div style="margin: 0 18px; background: #17191B; border: 1px solid #24272A; padding: 12px 13px; display: flex; flex-direction: column; gap: 10px">
+    <div style="display: flex; gap: 14px">
+      <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 6px">
+        <div style="display: flex; align-items: baseline; justify-content: space-between">
+          <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 9px; letter-spacing: .12em; color: #8A8F93">PROTEÍNA</div>
+          <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 11px; font-weight: 700">{{protTxt}}</div>
+        </div>
+        <div style="height: 3px; background: #24272A"><div style="height: 100%; width: {{protPct}}; background: #DCFF4F"></div></div>
+      </div>
+      <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 6px">
+        <div style="display: flex; align-items: baseline; justify-content: space-between">
+          <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 9px; letter-spacing: .12em; color: #8A8F93">AGUA</div>
+          <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 11px; font-weight: 700">{{waterTxt}}</div>
+        </div>
+        <div style="height: 3px; background: #24272A"><div style="height: 100%; width: {{waterPct}}; background: #4A5257"></div></div>
+      </div>
+    </div>
+    <div style="display: flex; gap: 6px">
+      <sc-for list="{{chips}}" as="c" hint-placeholder-count="4">
+        <div onClick="{{c.add}}" style="flex-grow: 1; border: 1px solid #2E3236; padding: 11px 0; text-align: center; font-family: 'Space Mono', ui-monospace, monospace; font-size: 10.5px; cursor: pointer; color: #D5D9DB">{{c.label}}</div>
+      </sc-for>
+    </div>
+  </div>
+
+  <div style="flex-grow: 1"></div>
+
+  <div style="height: 66px; flex: 0 0 66px; border-top: 1px solid #24272A; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr))">
+    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; cursor: pointer; border-top: 2px solid #DCFF4F">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#DCFF4F" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7.5" height="7.5"></rect><rect x="13.5" y="3" width="7.5" height="7.5"></rect><rect x="3" y="13.5" width="7.5" height="7.5"></rect><rect x="13.5" y="13.5" width="7.5" height="7.5"></rect></svg>
+      <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 8.5px; letter-spacing: .1em; color: #DCFF4F">TABLERO</div>
+    </div>
+    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; cursor: pointer; border-top: 2px solid transparent">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#6E7477" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6M8 5.5v13M16 5.5v13M20 9v6M8 12h8"></path></svg>
+      <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 8.5px; letter-spacing: .1em; color: #6E7477">SESIÓN</div>
+    </div>
+    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; cursor: pointer; border-top: 2px solid transparent">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#6E7477" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20.5h18M6 16l4.5-5.5 3.2 3.2L20 6"></path></svg>
+      <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 8.5px; letter-spacing: .1em; color: #6E7477">REGISTRO</div>
+    </div>
+    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; cursor: pointer; border-top: 2px solid transparent">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#6E7477" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 6H21M8.5 12H21M8.5 18H21M3.5 6h.01M3.5 12h.01M3.5 18h.01"></path></svg>
+      <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 8.5px; letter-spacing: .1em; color: #6E7477">PLAN</div>
+    </div>
+  </div>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+const MU = ['Pull-up estricto × 5', 'Pull-up explosivo al pecho', 'Pull-up al esternón', 'Dip en barra', 'Transición con banda', 'Muscle-up asistido', 'Muscle-up estricto'];
+const HS = ['Pike push-up', 'Pike push-up elevado', 'Handstand 45 s pared', 'HSPU parcial', 'HSPU completo a la pared', 'HSPU libre'];
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { w: 1, mu: 3, hs: 2, prot: 90, water: 1750, started: false, sets: 12 };
+  }
+  renderVals() {
+    const st = this.state;
+    const deload = (n) => n === 8 || n === 12;
+    const weeks = [];
+    for (let n = 1; n <= 12; n++) {
+      const past = n < st.w;
+      weeks.push({
+        n: n,
+        bg: n === st.w ? '#DCFF4F' : deload(n) ? '#241A15' : past ? '#24272A' : '#17191B',
+        border: n === st.w ? '#DCFF4F' : deload(n) ? '#4A342A' : '#24272A',
+        ink: n === st.w ? '#0E0F10' : deload(n) ? '#B5763F' : '#6E7477',
+        pick: () => this.setState({ w: n })
+      });
+    }
+    const rail = (list, lvl, set) =>
+      list.map((name, k) => ({
+        bg: k < lvl ? '#4A5257' : k === lvl ? '#DCFF4F' : '#17191B',
+        border: k <= lvl ? 'transparent' : '#24272A',
+        pick: () => set(k === lvl ? k - 1 : k)
+      }));
+    const pct = (lvl, list) => Math.round(((lvl + 1) / list.length) * 100) + '%';
+    const sesPct = Math.round((st.sets / 37) * 100) + '%';
+    const chip = (label, kind, amount) => ({
+      label: label,
+      add: () =>
+        kind === 'p'
+          ? this.setState({ prot: Math.min(200, st.prot + amount) })
+          : this.setState({ water: Math.min(4000, st.water + amount) })
+    });
+    return {
+      weeks: weeks,
+      weekLabel: 'SEM ' + String(st.w).padStart(2, '0') + '/12 · BLOQUE ' + (st.w <= 4 ? 1 : st.w <= 8 ? 2 : 3),
+      weekNote: deload(st.w) ? 'Semana de descarga · 60 % del volumen' : st.w === 1 || st.w === 4 || st.w === 9 ? 'Semana de retest · mide máximos en tres días separados' : 'Semana de carga · sube reps antes que lastre',
+      sesPct: sesPct,
+      start: () => this.setState({ started: !st.started }),
+      startLabel: st.started ? 'CONTINUAR · SERIE 13 DE 37' : 'EMPEZAR SESIÓN',
+      startBg: st.started ? '#17191B' : '#DCFF4F',
+      startInk: st.started ? '#DCFF4F' : '#0E0F10',
+      skills: [
+        { name: 'Muscle-up', pct: pct(st.mu, MU), current: MU[st.mu], rungs: rail(MU, st.mu, (v) => this.setState({ mu: Math.max(0, v) })) },
+        { name: 'Handstand push-up', pct: pct(st.hs, HS), current: HS[st.hs], rungs: rail(HS, st.hs, (v) => this.setState({ hs: Math.max(0, v) })) }
+      ],
+      protTxt: st.prot + '/150',
+      protPct: Math.min(100, Math.round((st.prot / 150) * 100)) + '%',
+      waterTxt: (st.water / 1000).toFixed(1).replace('.', ',') + '/3,5',
+      waterPct: Math.min(100, Math.round((st.water / 3500) * 100)) + '%',
+      chips: [chip('+30 g pollo', 'p', 30), chip('+20 g batido', 'p', 20), chip('+12 g huevos', 'p', 12), chip('+500 ml', 'a', 500)]
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,110 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap">
+  <style>
+    body { margin: 0; }
+    a { color: #E0A54B; } a:hover { color: #c98d34; }
+  </style>
+</helmet>
+<div style="width: 430px; height: 860px; background: #191B1E; color: #EDEAE3; font-family: 'Space Grotesk', system-ui, sans-serif; padding: 22px 20px; display: flex; flex-direction: column; gap: 18px; overflow: hidden; box-sizing: border-box">
+
+  <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 10px; border-bottom: 1px solid #3A3F45; padding-bottom: 10px">
+    <div style="font-family: 'Anton', 'Arial Narrow', sans-serif; font-size: 21px; text-transform: uppercase">Registro</div>
+    <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 10px; letter-spacing: .14em; color: #E0A54B">A · TIZA</div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 7px">
+    <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 9.5px; letter-spacing: .14em; color: #6B7178">01 · CAMPO NUMÉRICO</div>
+    <div style="font-size: 12.5px; line-height: 1.45; color: #9BA2A9; text-wrap: pretty">Con teclado y sin él: los pasos de ±0,1 evitan abrir el teclado numérico para corregir un decimal recién pesado.</div>
+    <div style="background: #101215; border-radius: 3px; padding: 14px 16px; display: flex; flex-direction: column; gap: 9px">
+      <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 10px; letter-spacing: .14em; color: #6B7178">PESO EN AYUNAS · KG</div>
+      <div style="display: flex; align-items: stretch; gap: 9px">
+        <div onClick="{{dec}}" style="width: 52px; flex: 0 0 52px; height: 56px; border: 1px solid #3A3F45; border-radius: 3px; display: flex; align-items: center; justify-content: center; cursor: pointer">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9BA2A9" stroke-width="2.2" stroke-linecap="round"><path d="M5 12h14"></path></svg>
+        </div>
+        <div style="flex-grow: 1; height: 56px; background: #202429; border: 1px solid #3A3F45; border-radius: 3px; display: flex; align-items: center; justify-content: center; font-family: 'Space Mono', ui-monospace, monospace; font-size: 26px; font-weight: 700">{{peso}}</div>
+        <div onClick="{{inc}}" style="width: 52px; flex: 0 0 52px; height: 56px; border: 1px solid #3A3F45; border-radius: 3px; display: flex; align-items: center; justify-content: center; cursor: pointer">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9BA2A9" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 7px">
+    <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 9.5px; letter-spacing: .14em; color: #6B7178">02 · GRÁFICA DE PESO</div>
+    <div style="font-size: 12.5px; line-height: 1.45; color: #9BA2A9; text-wrap: pretty">Alta y con la tendencia dicha en palabras. Una línea que sube o baja sin cifra al lado no informa de nada.</div>
+    <div style="background: #101215; border-radius: 3px; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px">
+      <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 10px">
+        <div style="font-family: 'Anton', 'Arial Narrow', sans-serif; font-size: 30px; color: #E0A54B; line-height: 1">−0,9 kg</div>
+        <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 10.5px; color: #6B7178">en 7 semanas</div>
+      </div>
+      <svg width="358" height="104" viewBox="0 0 358 104" fill="none" style="display: block; max-width: 100%">
+        <path d="M0 78 H358" stroke="#2A2E33" stroke-width="1"></path>
+        <path d="M0 40 H358" stroke="#2A2E33" stroke-width="1" stroke-dasharray="3 4"></path>
+        <polyline points="{{line}}" fill="none" stroke="#E0A54B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></polyline>
+        <sc-for list="{{dots}}" as="d" hint-placeholder-count="7">
+          <circle cx="{{d.x}}" cy="{{d.y}}" r="3.5" fill="#191B1E" stroke="#E0A54B" stroke-width="2"></circle>
+        </sc-for>
+      </svg>
+      <div style="display: flex; justify-content: space-between; font-family: 'Space Mono', ui-monospace, monospace; font-size: 9.5px; color: #6B7178">
+        <div>SEM 01 · 79,0</div>
+        <div>SEM 07 · 78,1</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 7px; flex-grow: 1">
+    <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 9.5px; letter-spacing: .14em; color: #6B7178">03 · HISTORIAL DE TESTS</div>
+    <div style="font-size: 12.5px; line-height: 1.45; color: #9BA2A9; text-wrap: pretty">La diferencia contra el test anterior, calculada. Es la única cifra que responde a “¿está funcionando el plan?”.</div>
+    <div style="background: #101215; border-radius: 3px; padding: 4px 16px">
+      <div style="height: 48px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid #2A2E33">
+        <div style="flex-grow: 1; font-size: 13.5px">Pull-up estricto</div>
+        <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 15px; font-weight: 700">8</div>
+        <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 12px; font-weight: 700; color: #4E8C5A; width: 34px; text-align: right">+2</div>
+      </div>
+      <div style="height: 48px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid #2A2E33">
+        <div style="flex-grow: 1; font-size: 13.5px">Dips en paralelas</div>
+        <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 15px; font-weight: 700">12</div>
+        <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 12px; font-weight: 700; color: #4E8C5A; width: 34px; text-align: right">+3</div>
+      </div>
+      <div style="height: 48px; display: flex; align-items: center; gap: 12px">
+        <div style="flex-grow: 1; font-size: 13.5px">Handstand a la pared</div>
+        <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 15px; font-weight: 700">38 s</div>
+        <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 12px; font-weight: 700; color: #6B7178; width: 34px; text-align: right">=</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":430,"height":860}}'>
+const W = [79.0, 78.9, 78.6, 78.7, 78.4, 78.4, 78.1];
+
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { peso: 78.4 }; }
+  renderVals() {
+    const min = 77.9, max = 79.2;
+    const pts = W.map((v, k) => ({
+      x: Math.round((k / (W.length - 1)) * 344) + 7,
+      y: Math.round(94 - ((v - min) / (max - min)) * 84)
+    }));
+    const step = (d) => () => this.setState({ peso: Math.round((this.state.peso + d) * 10) / 10 });
+    return {
+      peso: this.state.peso.toFixed(1).replace('.', ','),
+      inc: step(0.1),
+      dec: step(-0.1),
+      line: pts.map((p) => p.x + ',' + p.y).join(' '),
+      dots: pts
+    };
+  }
+}
+</script>
+</body>
+</html>

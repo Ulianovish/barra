@@ -1,0 +1,116 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap">
+  <style>
+    body { margin: 0; }
+    a { color: #DCFF4F; } a:hover { color: #c3e33a; }
+  </style>
+</helmet>
+<div style="width: 430px; height: 860px; background: #0E0F10; color: #F2F4F3; font-family: 'Space Grotesk', system-ui, sans-serif; padding: 22px 20px; display: flex; flex-direction: column; gap: 18px; overflow: hidden; box-sizing: border-box">
+
+  <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 10px; border-bottom: 1px solid #24272A; padding-bottom: 10px">
+    <div style="font-family: 'Anton', 'Arial Narrow', sans-serif; font-size: 21px; text-transform: uppercase">Registro</div>
+    <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 10px; letter-spacing: .14em; color: #DCFF4F">C · TABLERO</div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 7px">
+    <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 9.5px; letter-spacing: .14em; color: #6E7477">01 · CAMPOS EN REJILLA</div>
+    <div style="font-size: 12.5px; line-height: 1.45; color: #8A8F93; text-wrap: pretty">Los cuatro números de un retest en una pantalla, sin desplazarse. El foco se marca con la regla lima, no con un borde de color.</div>
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px">
+      <sc-for list="{{fields}}" as="f" hint-placeholder-count="4">
+        <div onClick="{{f.focus}}" style="background: #17191B; border: 1px solid #24272A; border-top: 2px solid {{f.mark}}; padding: 10px 12px 12px; display: flex; flex-direction: column; gap: 6px; cursor: pointer">
+          <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 9px; letter-spacing: .12em; color: #8A8F93">{{f.label}}</div>
+          <div style="display: flex; align-items: baseline; gap: 5px">
+            <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 21px; font-weight: 700; color: {{f.ink}}">{{f.value}}</div>
+            <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 10px; color: #6E7477">{{f.unit}}</div>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 7px">
+    <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 9.5px; letter-spacing: .14em; color: #6E7477">02 · GRÁFICA DE PESO</div>
+    <div style="font-size: 12.5px; line-height: 1.45; color: #8A8F93; text-wrap: pretty">Con rejilla y eje: en el tablero la gráfica compite con otros datos, así que necesita referencia para leerse rápido.</div>
+    <div style="background: #17191B; border: 1px solid #24272A; padding: 12px 13px; display: flex; flex-direction: column; gap: 8px">
+      <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 10px">
+        <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 10px; letter-spacing: .12em; color: #8A8F93">PESO · 7 SEMANAS</div>
+        <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 13px; font-weight: 700; color: #DCFF4F">−0,9 kg</div>
+      </div>
+      <svg width="364" height="92" viewBox="0 0 364 92" fill="none" style="display: block; max-width: 100%">
+        <path d="M28 8 H364" stroke="#1E2124" stroke-width="1"></path>
+        <path d="M28 34 H364" stroke="#1E2124" stroke-width="1"></path>
+        <path d="M28 60 H364" stroke="#1E2124" stroke-width="1"></path>
+        <path d="M28 86 H364" stroke="#24272A" stroke-width="1"></path>
+        <text x="0" y="12" fill="#6E7477" font-family="Space Mono, monospace" font-size="9">79,2</text>
+        <text x="0" y="90" fill="#6E7477" font-family="Space Mono, monospace" font-size="9">77,9</text>
+        <polyline points="{{line}}" fill="none" stroke="#DCFF4F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></polyline>
+      </svg>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 7px; flex-grow: 1">
+    <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 9.5px; letter-spacing: .14em; color: #6E7477">03 · HISTORIAL DE TESTS</div>
+    <div style="font-size: 12.5px; line-height: 1.45; color: #8A8F93; text-wrap: pretty">Tabla con columna de diferencia. Mismo dato que en A, resuelto como fila de datos en vez de como titular.</div>
+    <div style="border: 1px solid #24272A">
+      <div style="display: grid; grid-template-columns: 1fr 62px 54px; background: #17191B; border-bottom: 1px solid #24272A">
+        <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 9px; letter-spacing: .12em; color: #8A8F93; padding: 8px 12px">EJERCICIO</div>
+        <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 9px; letter-spacing: .12em; color: #8A8F93; padding: 8px 0; text-align: right">SEM 04</div>
+        <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 9px; letter-spacing: .12em; color: #8A8F93; padding: 8px 12px; text-align: right">DIF</div>
+      </div>
+      <sc-for list="{{tests}}" as="t" hint-placeholder-count="3">
+        <div style="display: grid; grid-template-columns: 1fr 62px 54px; align-items: center; border-bottom: 1px solid #1A1D1F">
+          <div style="font-size: 13px; padding: 11px 12px">{{t.name}}</div>
+          <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 13px; font-weight: 700; text-align: right">{{t.v}}</div>
+          <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 12px; font-weight: 700; padding: 0 12px; text-align: right; color: {{t.color}}">{{t.d}}</div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":430,"height":860}}'>
+const W = [79.0, 78.9, 78.6, 78.7, 78.4, 78.4, 78.1];
+const FIELDS = [
+  { label: 'PESO', value: '78,4', unit: 'kg' },
+  { label: 'PULL-UP', value: '8', unit: 'reps' },
+  { label: 'DIP', value: '12', unit: 'reps' },
+  { label: 'HANDSTAND', value: '38', unit: 's' }
+];
+
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { f: 0 }; }
+  renderVals() {
+    const min = 77.9, max = 79.2;
+    const line = W.map((v, k) => {
+      const x = Math.round(28 + (k / (W.length - 1)) * 330);
+      const y = Math.round(86 - ((v - min) / (max - min)) * 78);
+      return x + ',' + y;
+    }).join(' ');
+    return {
+      line: line,
+      fields: FIELDS.map((f, k) => ({
+        label: f.label, value: f.value, unit: f.unit,
+        mark: k === this.state.f ? '#DCFF4F' : '#24272A',
+        ink: k === this.state.f ? '#DCFF4F' : '#F2F4F3',
+        focus: () => this.setState({ f: k })
+      })),
+      tests: [
+        { name: 'Pull-up estricto', v: '8', d: '+2', color: '#8FCB9B' },
+        { name: 'Dips en paralelas', v: '12', d: '+3', color: '#8FCB9B' },
+        { name: 'Handstand a la pared', v: '38 s', d: '=', color: '#6E7477' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

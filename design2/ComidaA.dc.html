@@ -1,0 +1,124 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap">
+  <style>
+    body { margin: 0; }
+    a { color: #E0A54B; } a:hover { color: #c98d34; }
+  </style>
+</helmet>
+<div style="width: 430px; height: 900px; background: #191B1E; color: #EDEAE3; font-family: 'Space Grotesk', system-ui, sans-serif; padding: 22px 20px; display: flex; flex-direction: column; gap: 18px; overflow: hidden; box-sizing: border-box">
+
+  <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 10px; border-bottom: 1px solid #3A3F45; padding-bottom: 10px">
+    <div style="font-family: 'Anton', 'Arial Narrow', sans-serif; font-size: 21px; text-transform: uppercase">Comida</div>
+    <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 10px; letter-spacing: .14em; color: #E0A54B">A · TIZA</div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 7px">
+    <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 9.5px; letter-spacing: .14em; color: #6B7178">01 · CONTADOR</div>
+    <div style="font-size: 12.5px; line-height: 1.45; color: #9BA2A9; text-wrap: pretty">Lo que falta, no lo que llevas. “58 g por delante” es una instrucción; “92 de 150” es un informe.</div>
+    <div style="background: #101215; border-radius: 3px; padding: 16px; display: flex; flex-direction: column; gap: 14px">
+      <div style="display: flex; flex-direction: column; gap: 8px">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 10px">
+          <div style="display: flex; align-items: baseline; gap: 8px">
+            <div style="font-family: 'Anton', 'Arial Narrow', sans-serif; font-size: 38px; color: #E0A54B; line-height: .9">{{faltanP}}</div>
+            <div style="font-size: 14px; color: #9BA2A9">g de proteína por delante</div>
+          </div>
+          <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 11px; color: #6B7178; white-space: nowrap">{{protTxt}}</div>
+        </div>
+        <div style="height: 8px; background: #2A2E33; border-radius: 4px; overflow: hidden"><div style="height: 100%; width: {{protPct}}; background: #E0A54B"></div></div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 8px">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 10px">
+          <div style="display: flex; align-items: baseline; gap: 8px">
+            <div style="font-family: 'Anton', 'Arial Narrow', sans-serif; font-size: 38px; color: #4EB6C4; line-height: .9">{{faltanA}}</div>
+            <div style="font-size: 14px; color: #9BA2A9">L de agua por delante</div>
+          </div>
+          <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 11px; color: #6B7178; white-space: nowrap">{{aguaTxt}}</div>
+        </div>
+        <div style="height: 8px; background: #2A2E33; border-radius: 4px; overflow: hidden"><div style="height: 100%; width: {{aguaPct}}; background: #4EB6C4"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 7px">
+    <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 9.5px; letter-spacing: .14em; color: #6B7178">02 · BOTÓN DE PORCIÓN</div>
+    <div style="font-size: 12.5px; line-height: 1.45; color: #9BA2A9; text-wrap: pretty">La comida delante y los gramos detrás: se busca “pechuga”, no “30 g”. 56px de alto, dos columnas.</div>
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px">
+      <sc-for list="{{quick}}" as="q" hint-placeholder-count="6">
+        <div onClick="{{q.add}}" style="height: 56px; border: 1px solid #3A3F45; border-radius: 3px; background: #202429; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 0 13px; cursor: pointer">
+          <div style="font-size: 13.5px; font-weight: 500">{{q.name}}</div>
+          <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 12px; font-weight: 700; color: #E0A54B; white-space: nowrap">{{q.g}}</div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 7px">
+    <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 9.5px; letter-spacing: .14em; color: #6B7178">03 · INTERRUPTOR</div>
+    <div style="font-size: 12.5px; line-height: 1.45; color: #9BA2A9; text-wrap: pretty">Fila entera tocable, no solo la palanca.</div>
+    <div onClick="{{toggleCrea}}" style="background: #101215; border-radius: 3px; height: 60px; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 0 16px; cursor: pointer">
+      <div style="font-size: 14px; font-weight: 500">Creatina · 5 g</div>
+      <div style="width: 50px; height: 30px; border-radius: 15px; background: {{creaBg}}; position: relative; flex: 0 0 50px">
+        <div style="position: absolute; top: 3px; left: {{creaX}}; width: 24px; height: 24px; border-radius: 12px; background: #EDEAE3"></div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 7px; flex-grow: 1">
+    <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 9.5px; letter-spacing: .14em; color: #6B7178">04 · TIRA EN HOY</div>
+    <div style="font-size: 12.5px; line-height: 1.45; color: #9BA2A9; text-wrap: pretty">Como Comida deja de ser pestaña, esta tira vive al pie de Hoy: se ve sin buscarla y lleva a la pantalla completa de un toque.</div>
+    <div style="background: #101215; border-radius: 3px; height: 56px; display: flex; align-items: center; gap: 14px; padding: 0 16px">
+      <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 6px">
+        <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 10px; color: #9BA2A9">{{lblProt}}</div>
+        <div style="height: 4px; background: #2A2E33; border-radius: 2px; overflow: hidden"><div style="height: 100%; width: {{protPct}}; background: #E0A54B"></div></div>
+      </div>
+      <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 6px">
+        <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 10px; color: #9BA2A9">{{lblAgua}}</div>
+        <div style="height: 4px; background: #2A2E33; border-radius: 2px; overflow: hidden"><div style="height: 100%; width: {{aguaPct}}; background: #4EB6C4"></div></div>
+      </div>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B7178" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"></path></svg>
+    </div>
+  </div>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":430,"height":900}}'>
+const QUICK = [
+  { name: 'Pechuga · 150 g', g: '+35 g', p: 35 },
+  { name: 'Batido de suero', g: '+24 g', p: 24 },
+  { name: 'Tres huevos', g: '+19 g', p: 19 },
+  { name: 'Yogur griego', g: '+17 g', p: 17 },
+  { name: 'Lata de atún', g: '+24 g', p: 24 },
+  { name: 'Lentejas · plato', g: '+18 g', p: 18 }
+];
+
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { prot: 92, agua: 1750, crea: false }; }
+  renderVals() {
+    const st = this.state;
+    return {
+      protTxt: st.prot + '/150',
+      faltanP: Math.max(0, 150 - st.prot),
+      lblProt: 'PROTEÍNA · faltan ' + Math.max(0, 150 - st.prot) + ' g',
+      lblAgua: 'AGUA · faltan ' + Math.max(0, (3500 - st.agua) / 1000).toFixed(1).replace('.', ',') + ' L',
+      protPct: Math.min(100, Math.round((st.prot / 150) * 100)) + '%',
+      aguaTxt: (st.agua / 1000).toFixed(1).replace('.', ',') + '/3,5',
+      faltanA: Math.max(0, (3500 - st.agua) / 1000).toFixed(1).replace('.', ','),
+      aguaPct: Math.min(100, Math.round((st.agua / 3500) * 100)) + '%',
+      quick: QUICK.map((q) => ({ name: q.name, g: q.g, add: () => this.setState({ prot: Math.min(220, st.prot + q.p) }) })),
+      creaBg: st.crea ? '#4E8C5A' : '#3A3F45',
+      creaX: st.crea ? '23px' : '3px',
+      toggleCrea: () => this.setState({ crea: !st.crea })
+    };
+  }
+}
+</script>
+</body>
+</html>

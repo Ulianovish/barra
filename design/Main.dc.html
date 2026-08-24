@@ -1,0 +1,67 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Barlow:wght@400;500;600&family=IBM+Plex+Mono:wght@400;600&display=swap">
+  <style>
+    body { margin: 0; }
+    a { color: #1F3BE8; } a:hover { color: #16299f; }
+  </style>
+</helmet>
+<div style="width: 560px; height: 844px; background: #D7D8D2; color: #15171A; font-family: 'Barlow', system-ui, sans-serif; padding: 34px 34px 28px; display: flex; flex-direction: column; gap: 22px; overflow: hidden; box-sizing: border-box">
+
+  <div style="display: flex; flex-direction: column; gap: 8px">
+    <div style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: #71767C">BARRA · rediseño</div>
+    <div style="font-family: 'Archivo Black', system-ui, sans-serif; font-size: 40px; line-height: .95; letter-spacing: -.02em">TRES<br>DIRECCIONES</div>
+    <div style="font-size: 14.5px; line-height: 1.5; color: #3B424A; max-width: 430px; text-wrap: pretty">Cada una responde a los mismos cuatro problemas —marcar series entrenando, el scroll largo de Hoy, no saber si vas bien, y que comida y agua se olviden— con una estructura y una estética distintas. Las tres pantallas de la derecha funcionan: tócalas.</div>
+  </div>
+
+  <div style="height: 1px; background: #B9BCB4"></div>
+
+  <div style="display: flex; flex-direction: column; gap: 16px; flex-grow: 1">
+
+    <div style="display: flex; gap: 14px; align-items: flex-start">
+      <div style="width: 46px; height: 46px; flex: 0 0 46px; background: #191B1E; color: #EDEAE3; display: flex; align-items: center; justify-content: center; font-family: 'Archivo Black', sans-serif; font-size: 19px">A</div>
+      <div style="display: flex; flex-direction: column; gap: 4px">
+        <div style="font-family: 'Archivo Black', sans-serif; font-size: 17px; letter-spacing: .01em">TIZA · una serie, un gesto</div>
+        <div style="font-size: 13.5px; line-height: 1.5; color: #3B424A; text-wrap: pretty">Un solo ejercicio llena la pantalla y una losa fija abajo es el botón de marcar serie. La sesión se navega por una regla de 13 puntos, no rodando. Pizarra oscura para mirarla en un parque a mediodía.</div>
+        <div style="font-size: 13px; line-height: 1.5; color: #71767C"><b style="font-weight: 600; color: #D8391B">A cambio:</b> pierdes la vista de conjunto de la sesión — para saber qué viene hay que avanzar.</div>
+      </div>
+    </div>
+
+    <div style="display: flex; gap: 14px; align-items: flex-start">
+      <div style="width: 46px; height: 46px; flex: 0 0 46px; background: #F4F0E7; border: 1px solid #C9BFAA; color: #23201B; display: flex; align-items: center; justify-content: center; font-family: 'Archivo Black', sans-serif; font-size: 19px">B</div>
+      <div style="display: flex; flex-direction: column; gap: 4px">
+        <div style="font-family: 'Archivo Black', sans-serif; font-size: 17px; letter-spacing: .01em">CUADERNO · el día entero en una hoja</div>
+        <div style="font-size: 13.5px; line-height: 1.5; color: #3B424A; text-wrap: pretty">Entreno, proteína y agua viven en la misma línea de tiempo, en el orden en que ocurren. Tres medidores arriba dicen si el día va bien sin entrar a ninguna pestaña. Papel y tinta, tono de diario.</div>
+        <div style="font-size: 13px; line-height: 1.5; color: #71767C"><b style="font-weight: 600; color: #D8391B">A cambio:</b> más densidad y letra más pequeña; el gesto de marcar serie es menor que en A.</div>
+      </div>
+    </div>
+
+    <div style="display: flex; gap: 14px; align-items: flex-start">
+      <div style="width: 46px; height: 46px; flex: 0 0 46px; background: #0E0F10; color: #DCFF4F; display: flex; align-items: center; justify-content: center; font-family: 'Archivo Black', sans-serif; font-size: 19px">C</div>
+      <div style="display: flex; flex-direction: column; gap: 4px">
+        <div style="font-family: 'Archivo Black', sans-serif; font-size: 17px; letter-spacing: .01em">TABLERO · 12 semanas de un vistazo</div>
+        <div style="font-size: 13.5px; line-height: 1.5; color: #3B424A; text-wrap: pretty">La portada deja de ser la sesión y pasa a ser el mapa: semanas, escaleras de skill, peso y macros en una pantalla. Al entreno se entra desde ahí. Estética técnica, retícula apretada.</div>
+        <div style="font-size: 13px; line-height: 1.5; color: #71767C"><b style="font-weight: 600; color: #D8391B">A cambio:</b> un toque más de distancia hasta empezar a entrenar.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div style="border-top: 1px solid #B9BCB4; padding-top: 14px; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11px; line-height: 1.6; color: #71767C; text-wrap: pretty">Datos reales del lunes de la semana 1 · empuje vertical · 13 ejercicios</div>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":560,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

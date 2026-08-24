@@ -1,0 +1,138 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap">
+  <style>
+    body { margin: 0; }
+    a { color: #DCFF4F; } a:hover { color: #c3e33a; }
+  </style>
+</helmet>
+<div style="width: 430px; height: 1250px; background: #0E0F10; color: #F2F4F3; font-family: 'Space Grotesk', system-ui, sans-serif; padding: 22px 20px; display: flex; flex-direction: column; gap: 18px; overflow: hidden; box-sizing: border-box">
+
+  <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 10px; border-bottom: 1px solid #24272A; padding-bottom: 10px">
+    <div style="font-family: 'Anton', 'Arial Narrow', sans-serif; font-size: 21px; text-transform: uppercase">Plan</div>
+    <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 10px; letter-spacing: .14em; color: #DCFF4F">C · TABLERO</div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 7px">
+    <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 9.5px; letter-spacing: .14em; color: #6E7477">01 · LA SEMANA</div>
+    <div style="font-size: 12.5px; line-height: 1.45; color: #8A8F93; text-wrap: pretty">Tabla de verdad, con cabecera y columna de lugar. Aquí la retícula ayuda: se compara casa contra parque de una pasada.</div>
+    <div style="border: 1px solid #24272A">
+      <div style="display: grid; grid-template-columns: 46px 1fr 52px; background: #17191B; border-bottom: 1px solid #24272A">
+        <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 9px; letter-spacing: .12em; color: #8A8F93; padding: 8px 0 8px 12px">DÍA</div>
+        <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 9px; letter-spacing: .12em; color: #8A8F93; padding: 8px 0">SESIÓN</div>
+        <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 9px; letter-spacing: .12em; color: #8A8F93; padding: 8px 12px 8px 0; text-align: right">DÓNDE</div>
+      </div>
+      <sc-for list="{{days}}" as="d" hint-placeholder-count="7">
+        <div onClick="{{d.pick}}" style="display: grid; grid-template-columns: 46px 1fr 52px; align-items: center; min-height: 46px; border-bottom: 1px solid #1A1D1F; background: {{d.bg}}; cursor: pointer">
+          <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 10.5px; padding-left: 12px; color: {{d.dayInk}}">{{d.abbr}}</div>
+          <div style="font-size: 13px; color: {{d.ink}}">{{d.name}}</div>
+          <div style="display: flex; justify-content: flex-end; padding-right: 12px">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="{{d.iconInk}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="{{d.icon}}"></path></svg>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 7px">
+    <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 9.5px; letter-spacing: .14em; color: #6E7477">02 · CHECKLIST DE EQUIPO</div>
+    <div style="font-size: 12.5px; line-height: 1.45; color: #8A8F93; text-wrap: pretty">Con contador arriba: dos de cuatro es un dato de estado, y encaja con el resto del tablero.</div>
+    <div style="border: 1px solid #24272A">
+      <div style="background: #17191B; border-bottom: 1px solid #24272A; padding: 9px 12px; display: flex; align-items: center; justify-content: space-between">
+        <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 9px; letter-spacing: .12em; color: #8A8F93">EQUIPO</div>
+        <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 11px; font-weight: 700; color: #DCFF4F">{{tienesTxt}}</div>
+      </div>
+      <sc-for list="{{gear}}" as="g" hint-placeholder-count="4">
+        <div onClick="{{g.toggle}}" style="min-height: 46px; display: flex; align-items: center; gap: 12px; padding: 7px 12px; border-bottom: 1px solid #1A1D1F; cursor: pointer">
+          <div style="width: 20px; height: 20px; flex: 0 0 20px; border: 1.5px solid {{g.box}}; background: {{g.fill}}; display: flex; align-items: center; justify-content: center">
+            <sc-if value="{{g.on}}" hint-placeholder-val="{{ true }}">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#0E0F10" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"></path></svg>
+            </sc-if>
+          </div>
+          <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 1px">
+            <div style="font-size: 13px; color: {{g.ink}}">{{g.name}}</div>
+            <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 10px; color: #6E7477">{{g.note}}</div>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 7px; flex-grow: 1">
+    <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 9.5px; letter-spacing: .14em; color: #6E7477">03 · FECHA DE INICIO</div>
+    <div style="font-size: 12.5px; line-height: 1.45; color: #8A8F93; text-wrap: pretty">Con la consecuencia calculada al lado: cambiar la fecha te mueve de semana, y conviene verlo antes de tocarla.</div>
+    <div style="background: #17191B; border: 1px solid #24272A; padding: 13px 14px; display: flex; flex-direction: column; gap: 10px">
+      <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 9px; letter-spacing: .12em; color: #8A8F93">PRIMER LUNES DEL PROGRAMA</div>
+      <div style="display: flex; gap: 8px; align-items: stretch">
+        <div style="flex-grow: 1; height: 48px; background: #0E0F10; border: 1px solid #2E3236; display: flex; align-items: center; gap: 11px; padding: 0 13px">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#8A8F93" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16"></rect><path d="M3 10h18M8 3v4M16 3v4"></path></svg>
+          <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 16px; font-weight: 700">24·08·2026</div>
+        </div>
+        <div style="width: 118px; flex: 0 0 118px; height: 48px; border: 1px solid #24272A; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px">
+          <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 15px; font-weight: 700; color: #DCFF4F">SEM 01</div>
+          <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 8.5px; letter-spacing: .1em; color: #6E7477">TE TOCARÍA</div>
+        </div>
+      </div>
+      <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 10px; line-height: 1.5; color: #8A8F93">Recalcula retests (1 · 4 · 9), descargas (8 · 12) y el desbloqueo del muscle-up asistido (5).</div>
+    </div>
+  </div>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":430,"height":1250}}'>
+const CASA = 'M4 11l8-7 8 7v9H4z';
+const PARQUE = 'M12 22V9M6 9a6 6 0 1112 0M4 9h16';
+const CAMA = 'M3 18v-7h18v7M3 11V7M21 18v-4M7 11V8h5v3';
+const DAYS = [
+  ['LUN', 'Empuje vertical · HSPU', CASA],
+  ['MAR', 'Tirón · muscle-up', PARQUE],
+  ['MIÉ', 'Piernas y core', CASA],
+  ['JUE', 'Empuje horizontal', CASA],
+  ['VIE', 'Tirón pesado + skill', PARQUE],
+  ['SÁB', 'Full body ligero', PARQUE],
+  ['DOM', 'Descanso', CAMA]
+];
+const GEAR = [
+  ['Banda de resistencia media', 'transiciones asistidas', false],
+  ['Barra de dominadas', 'o parque a 15 min', true],
+  ['Rueda abdominal', 'o plancha larga', true],
+  ['Mochila con peso', 'desde la semana 5', false]
+];
+
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { d: 0, gear: GEAR.map((g) => g[2]) }; }
+  renderVals() {
+    const st = this.state;
+    return {
+      days: DAYS.map((d, k) => ({
+        abbr: d[0], name: d[1], icon: d[2],
+        bg: k === st.d ? '#17191B' : 'transparent',
+        ink: k === st.d ? '#F2F4F3' : '#B9BEC1',
+        dayInk: k === st.d ? '#DCFF4F' : '#6E7477',
+        iconInk: k === st.d ? '#DCFF4F' : '#6E7477',
+        pick: () => this.setState({ d: k })
+      })),
+      tienesTxt: st.gear.filter(Boolean).length + '/4',
+      gear: GEAR.map((g, k) => {
+        const on = st.gear[k];
+        return {
+          name: g[0], note: g[1], on: on,
+          box: on ? '#DCFF4F' : '#6E7477',
+          fill: on ? '#DCFF4F' : 'transparent',
+          ink: on ? '#6E7477' : '#F2F4F3',
+          toggle: () => { const n = st.gear.slice(); n[k] = !n[k]; this.setState({ gear: n }); }
+        };
+      })
+    };
+  }
+}
+</script>
+</body>
+</html>

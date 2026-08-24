@@ -1,0 +1,166 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:wght@400;500;600&family=IBM+Plex+Mono:wght@400;600;700&display=swap">
+  <style>
+    body { margin: 0; }
+    a { color: #E0A54B; } a:hover { color: #c98d34; }
+  </style>
+</helmet>
+<div style="width: 390px; height: 844px; background: #191B1E; color: #EDEAE3; font-family: 'Barlow', system-ui, sans-serif; display: flex; flex-direction: column; overflow: hidden; box-sizing: border-box">
+
+  <div style="padding: 18px 20px 12px; display: flex; align-items: flex-end; justify-content: space-between; gap: 12px">
+    <div style="display: flex; flex-direction: column; gap: 3px">
+      <div style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 10px; letter-spacing: .18em; color: #7E858C">LUNES · SEM 01 · CASA</div>
+      <div style="font-family: 'Anton', 'Barlow', sans-serif; font-size: 19px; letter-spacing: .04em; text-transform: uppercase">Empuje vertical</div>
+    </div>
+    <div style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px; font-weight: 700; color: #E0A54B; white-space: nowrap">{{done}}<span style="color: #7E858C">/13</span></div>
+  </div>
+
+  <div style="padding: 0 20px 10px; display: flex; gap: 4px; align-items: stretch">
+    <sc-for list="{{pips}}" as="p" hint-placeholder-count="13">
+      <div onClick="{{p.go}}" style="flex-grow: 1; height: 44px; display: flex; align-items: flex-end; cursor: pointer">
+        <div style="width: 100%; height: {{p.h}}; background: {{p.color}}; border-radius: 1px"></div>
+      </div>
+    </sc-for>
+  </div>
+
+  <div style="flex-grow: 1; padding: 0 20px; display: flex; flex-direction: column; justify-content: center; gap: 14px; min-height: 0">
+    <div style="display: flex; align-items: center; gap: 9px">
+      <div style="font-family: 'Anton', sans-serif; font-size: 13px; color: #191B1E; background: #4EB6C4; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center">{{ex.tag}}</div>
+      <div style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 10.5px; letter-spacing: .16em; text-transform: uppercase; color: #7E858C">{{ex.block}}</div>
+    </div>
+    <div style="font-family: 'Anton', 'Barlow', sans-serif; font-size: 44px; line-height: .92; letter-spacing: -.005em; text-transform: uppercase; text-wrap: balance">{{ex.name}}</div>
+    <div style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 22px; font-weight: 700; color: #E0A54B">{{ex.pres}}</div>
+    <div style="font-size: 14px; line-height: 1.45; color: #9BA2A9; text-wrap: pretty">{{ex.cue}}</div>
+  </div>
+
+  <div style="padding: 0 20px 14px">
+    <div style="height: 208px; border: 2px solid #3A3F45; border-radius: 3px; background: #202429; display: flex; flex-direction: column; overflow: hidden">
+      <div onClick="{{addSet}}" style="flex-grow: 1; display: flex; align-items: center; justify-content: center; gap: 14px; padding: 0 18px; flex-wrap: wrap; min-height: 0; cursor: pointer">
+        <sc-if value="{{empty}}" hint-placeholder-val="{{ false }}">
+          <div style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; letter-spacing: .14em; color: #6B7178; text-transform: uppercase; text-align: center">Toca aquí al terminar<br>una serie</div>
+        </sc-if>
+        <sc-for list="{{groups}}" as="g" hint-placeholder-count="2">
+          <div style="position: relative; display: flex; gap: 7px; height: 62px; align-items: stretch">
+            <sc-for list="{{g.bars}}" as="b" hint-placeholder-count="4">
+              <div style="width: 6px; background: #EDEAE3; border-radius: 3px"></div>
+            </sc-for>
+            <sc-if value="{{g.slash}}" hint-placeholder-val="{{ true }}">
+              <div style="position: absolute; left: -6px; top: 27px; width: 56px; height: 6px; background: #E0A54B; border-radius: 3px; transform: rotate(-22deg)"></div>
+            </sc-if>
+          </div>
+        </sc-for>
+      </div>
+      <div style="height: 52px; flex: 0 0 52px; border-top: 2px solid #3A3F45; display: flex; align-items: stretch">
+        <div onClick="{{undoSet}}" style="width: 62px; flex: 0 0 62px; border-right: 2px solid #3A3F45; display: flex; align-items: center; justify-content: center; cursor: pointer">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9BA2A9" stroke-width="2.2" stroke-linecap="round"><path d="M5 12h14"></path></svg>
+        </div>
+        <div style="flex-grow: 1; display: flex; align-items: center; justify-content: center; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px; letter-spacing: .1em; color: #9BA2A9">{{countTxt}}</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="height: 74px; flex: 0 0 74px; border-top: 2px solid #2A2E33; display: flex; align-items: stretch">
+    <div onClick="{{prev}}" style="width: 62px; flex: 0 0 62px; display: flex; align-items: center; justify-content: center; cursor: pointer; border-right: 1px solid #2A2E33">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#9BA2A9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg>
+    </div>
+    <div style="flex-grow: 1; display: flex; flex-direction: column; justify-content: center; gap: 6px; padding: 0 16px; min-width: 0">
+      <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 10px">
+        <div style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 10px; letter-spacing: .16em; color: #7E858C">DESCANSO</div>
+        <div style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 21px; font-weight: 700; color: {{restColor}}">{{clock}}</div>
+      </div>
+      <div style="height: 4px; background: #2A2E33; border-radius: 2px; overflow: hidden">
+        <div style="height: 100%; width: {{restPct}}; background: #E0A54B"></div>
+      </div>
+    </div>
+    <div onClick="{{next}}" style="width: 62px; flex: 0 0 62px; display: flex; align-items: center; justify-content: center; cursor: pointer; border-left: 1px solid #2A2E33">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#EDEAE3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"></path></svg>
+    </div>
+  </div>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+const EX = [
+  { tag: 'W', block: 'Calentamiento', name: 'Círculos de muñeca', pres: '2 min', target: 2, cue: 'Lo que protege tus muñecas todo el bloque. No lo saltes.' },
+  { tag: 'W', block: 'Calentamiento', name: 'Band pull-aparts', pres: '2 × 20', target: 2, cue: 'Escápulas juntas al final del recorrido.' },
+  { tag: 'W', block: 'Calentamiento', name: 'Dislocates con banda', pres: '2 × 10', target: 2, cue: 'Agarre ancho. Si duele el hombro, más ancho todavía.' },
+  { tag: 'W', block: 'Calentamiento', name: 'Wall slides', pres: '2 × 10', target: 2, cue: 'Lumbar pegada a la pared todo el rato.' },
+  { tag: 'W', block: 'Calentamiento', name: 'Pike push-up ligero', pres: '1 × 8', target: 1, cue: 'Solo para entrar en calor. Sin llegar al fallo.' },
+  { tag: 'A', block: 'Skill · Handstand', name: 'Handstand a la pared', pres: '5 × 20-45 s', target: 5, cue: 'Pecho a la pared, no espalda. Costillas metidas, glúteo apretado.' },
+  { tag: 'A', block: 'Skill · Handstand', name: 'Wall walks', pres: '3 × 3', target: 3, cue: 'Camina con los pies hacia la pared hasta quedar casi vertical.' },
+  { tag: 'B', block: 'Fuerza principal', name: 'Pike push-up elevado', pres: '4 × 6-8', target: 4, cue: 'Pies en silla o cama. Cabeza toca el suelo — rango completo o no cuenta.' },
+  { tag: 'B', block: 'Fuerza principal', name: 'Dips en paralelas', pres: '4 × 8-10', target: 4, cue: 'Pecho ligeramente adelante, hombros abajo y atrás.' },
+  { tag: 'C', block: 'Accesorio', name: 'Push-up diamante', pres: '3 × 10-12', target: 3, cue: 'Codos rozando el costado.' },
+  { tag: 'C', block: 'Accesorio', name: 'Elevación lateral', pres: '3 × 15', target: 3, cue: 'Banda corta. Sin balanceo.' },
+  { tag: 'D', block: 'Core', name: 'Hollow body hold', pres: '3 × 30 s', target: 3, cue: 'Espalda baja completamente pegada al suelo.' },
+  { tag: 'D', block: 'Core', name: 'Rueda abdominal', pres: '3 × 6-8', target: 3, cue: 'Sin arquear. Si la lumbar cede, acorta el recorrido.' }
+];
+const REST = 90;
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { i: 7, sets: { 0: 2, 1: 2, 2: 2, 3: 2, 4: 1, 5: 5, 6: 3, 7: 3 }, rest: 0 };
+  }
+  componentWillUnmount() { if (this._t) clearInterval(this._t); }
+  startClock() {
+    if (this._t) return;
+    this._t = setInterval(() => {
+      const r = this.state.rest > 0 ? this.state.rest - 1 : 0;
+      if (r === 0 && this._t) { clearInterval(this._t); this._t = null; }
+      this.setState({ rest: r });
+    }, 1000);
+  }
+  renderVals() {
+    const i = this.state.i;
+    const sets = this.state.sets;
+    const n = sets[i] || 0;
+    const ex = EX[i];
+    const groups = [];
+    let left = n;
+    while (left > 0) {
+      const take = Math.min(left, 5);
+      const bars = [];
+      for (let k = 0; k < Math.min(take, 4); k++) bars.push({ k: k });
+      groups.push({ bars: bars, slash: take === 5 });
+      left -= take;
+    }
+    const done = EX.filter((e, k) => (sets[k] || 0) >= e.target).length;
+    const pips = EX.map((e, k) => {
+      const c = sets[k] || 0;
+      const full = c >= e.target;
+      return {
+        h: k === i ? '26px' : full ? '13px' : c > 0 ? '9px' : '5px',
+        color: k === i ? '#E0A54B' : full ? '#EDEAE3' : c > 0 ? '#7E858C' : '#3A3F45',
+        go: () => this.setState({ i: k })
+      };
+    });
+    const r = this.state.rest;
+    return {
+      ex: Object.assign({}, ex, { n: n, target: ex.target }),
+      countTxt: n + ' DE ' + ex.target + ' SERIES',
+      groups: groups,
+      empty: n === 0,
+      done: done,
+      pips: pips,
+      clock: Math.floor(r / 60) + ':' + String(r % 60).padStart(2, '0'),
+      restPct: Math.round((r / REST) * 100) + '%',
+      restColor: r > 0 ? '#EDEAE3' : '#4E545B',
+      addSet: () => { const s = Object.assign({}, sets); s[i] = n + 1; this.setState({ sets: s, rest: REST }); this.startClock(); },
+      undoSet: () => { const s = Object.assign({}, sets); s[i] = Math.max(0, n - 1); this.setState({ sets: s }); },
+      prev: () => this.setState({ i: Math.max(0, i - 1) }),
+      next: () => this.setState({ i: Math.min(EX.length - 1, i + 1) })
+    };
+  }
+}
+</script>
+</body>
+</html>

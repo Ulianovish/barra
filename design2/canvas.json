@@ -1,0 +1,135 @@
+{
+  "artboards": [
+    {
+      "file": "Main.dc.html",
+      "x": 0,
+      "y": 0,
+      "w": 520,
+      "h": 910,
+      "title": "Despiece"
+    },
+    {
+      "file": "Sistema.dc.html",
+      "x": 600,
+      "y": 0,
+      "w": 520,
+      "h": 860,
+      "title": "Sistema · voz compartida"
+    },
+    {
+      "file": "MarcoA.dc.html",
+      "x": 1220,
+      "y": 0,
+      "w": 430,
+      "h": 790,
+      "title": "Marco · A TIZA"
+    },
+    {
+      "file": "MarcoC.dc.html",
+      "x": 1710,
+      "y": 0,
+      "w": 430,
+      "h": 790,
+      "title": "Marco · C TABLERO"
+    },
+    {
+      "file": "SesionA.dc.html",
+      "x": 1220,
+      "y": 890,
+      "w": 430,
+      "h": 1410,
+      "title": "Sesión · A TIZA"
+    },
+    {
+      "file": "SesionC.dc.html",
+      "x": 1710,
+      "y": 890,
+      "w": 430,
+      "h": 1090,
+      "title": "Sesión · C TABLERO"
+    },
+    {
+      "file": "SkillsA.dc.html",
+      "x": 1220,
+      "y": 2400,
+      "w": 430,
+      "h": 870,
+      "title": "Skills · A TIZA"
+    },
+    {
+      "file": "SkillsC.dc.html",
+      "x": 1710,
+      "y": 2400,
+      "w": 430,
+      "h": 700,
+      "title": "Skills · C TABLERO"
+    },
+    {
+      "file": "RegistroA.dc.html",
+      "x": 1220,
+      "y": 3370,
+      "w": 430,
+      "h": 860,
+      "title": "Registro · A TIZA"
+    },
+    {
+      "file": "RegistroC.dc.html",
+      "x": 1710,
+      "y": 3370,
+      "w": 430,
+      "h": 860,
+      "title": "Registro · C TABLERO"
+    },
+    {
+      "file": "ComidaA.dc.html",
+      "x": 1220,
+      "y": 4330,
+      "w": 430,
+      "h": 900,
+      "title": "Comida · A TIZA"
+    },
+    {
+      "file": "ComidaC.dc.html",
+      "x": 1710,
+      "y": 4330,
+      "w": 430,
+      "h": 900,
+      "title": "Comida · C TABLERO"
+    },
+    {
+      "file": "PlanA.dc.html",
+      "x": 1220,
+      "y": 5330,
+      "w": 430,
+      "h": 1250,
+      "title": "Plan · A TIZA"
+    },
+    {
+      "file": "PlanC.dc.html",
+      "x": 1710,
+      "y": 5330,
+      "w": 430,
+      "h": 1250,
+      "title": "Plan · C TABLERO"
+    }
+  ],
+  "annotations": [
+    {
+      "id": "col-a",
+      "x": 1220,
+      "y": -110,
+      "w": 430,
+      "text": "A · TIZA\nPizarra, ámbar, poco y grande. Pensado para mirarlo tres segundos con las manos sudadas."
+    },
+    {
+      "id": "col-c",
+      "x": 1710,
+      "y": -110,
+      "w": 430,
+      "text": "C · TABLERO\nNegro técnico, lima, retícula apretada. Pensado para ver mucho de una vez."
+    }
+  ],
+  "launch": {
+    "view": "canvas"
+  }
+}

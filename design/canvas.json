@@ -1,0 +1,9 @@
+{
+  "artboards": [
+    { "file": "Main.dc.html", "x": 0, "y": 0, "w": 560, "h": 844, "title": "Las tres direcciones" },
+    { "file": "Tiza.dc.html", "x": 640, "y": 0, "w": 390, "h": 844, "title": "Opción A · TIZA" },
+    { "file": "Cuaderno.dc.html", "x": 1110, "y": 0, "w": 390, "h": 844, "title": "Opción B · CUADERNO" },
+    { "file": "Tablero.dc.html", "x": 1580, "y": 0, "w": 390, "h": 844, "title": "Opción C · TABLERO" }
+  ],
+  "launch": { "view": "canvas" }
+}

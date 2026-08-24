@@ -1,0 +1,110 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap">
+  <style>
+    body { margin: 0; }
+    a { color: #DCFF4F; } a:hover { color: #c3e33a; }
+  </style>
+</helmet>
+<div style="width: 430px; height: 790px; background: #0E0F10; color: #F2F4F3; font-family: 'Space Grotesk', system-ui, sans-serif; padding: 22px 20px; display: flex; flex-direction: column; gap: 20px; overflow: hidden; box-sizing: border-box">
+
+  <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 10px; border-bottom: 1px solid #24272A; padding-bottom: 10px">
+    <div style="font-family: 'Anton', 'Arial Narrow', sans-serif; font-size: 21px; text-transform: uppercase">Marco</div>
+    <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 10px; letter-spacing: .14em; color: #DCFF4F">C · TABLERO</div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 8px">
+    <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 9.5px; letter-spacing: .14em; color: #6E7477">01 · BARRA SUPERIOR + SEMANAS</div>
+    <div style="font-size: 12.5px; line-height: 1.45; color: #8A8F93; text-wrap: pretty">Rejilla de 6×2 en vez de tira: cada semana lleva su número, se toca cómodo y el pie explica qué toca en la que elijas.</div>
+    <div style="background: #17191B; border: 1px solid #24272A; padding: 13px 14px; display: flex; flex-direction: column; gap: 10px">
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px">
+        <div style="font-family: 'Anton', 'Arial Narrow', sans-serif; font-size: 18px; letter-spacing: .1em">BARRA</div>
+        <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 10px; letter-spacing: .08em; color: #8A8F93">{{label}}</div>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 3px">
+        <sc-for list="{{weeks}}" as="w" hint-placeholder-count="12">
+          <div onClick="{{w.pick}}" style="height: 36px; background: {{w.bg}}; border: 1px solid {{w.border}}; display: flex; align-items: center; justify-content: center; cursor: pointer">
+            <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 9.5px; color: {{w.ink}}">{{w.n}}</div>
+          </div>
+        </sc-for>
+      </div>
+      <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 10px; color: #8A8F93; line-height: 1.4">{{note}}</div>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 8px">
+    <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 9.5px; letter-spacing: .14em; color: #6E7477">02 · PESTAÑAS</div>
+    <div style="font-size: 12.5px; line-height: 1.45; color: #8A8F93; text-wrap: pretty">Cuatro: el tablero absorbe lo que hoy está repartido, y Sesión es a donde se entra a entrenar.</div>
+    <div style="border-top: 1px solid #24272A; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr))">
+      <sc-for list="{{tabs}}" as="t" hint-placeholder-count="4">
+        <div onClick="{{t.pick}}" style="height: 62px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; cursor: pointer; border-top: 2px solid {{t.mark}}">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="{{t.ink}}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="{{t.d}}"></path></svg>
+          <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 8.5px; letter-spacing: .1em; color: {{t.ink}}">{{t.name}}</div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 8px; flex-grow: 1">
+    <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 9.5px; letter-spacing: .14em; color: #6E7477">03 · AVISOS</div>
+    <div style="font-size: 12.5px; line-height: 1.45; color: #8A8F93; text-wrap: pretty">Sin caja de color: una regla arriba y la etiqueta en mono. Pesan menos en una pantalla que ya está llena.</div>
+    <div style="display: flex; flex-direction: column; gap: 9px">
+      <div style="border-top: 2px solid #DCFF4F; background: #17191B; padding: 10px 12px 11px; display: flex; flex-direction: column; gap: 4px">
+        <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 9px; letter-spacing: .14em; color: #DCFF4F">VOLUMEN</div>
+        <div style="font-size: 13px; line-height: 1.45; color: #D5D9DB">Semanas 1-2 al 60%. Te vas a sentir capaz de más — no lo hagas.</div>
+      </div>
+      <div style="border-top: 2px solid #D8391B; background: #17191B; padding: 10px 12px 11px; display: flex; flex-direction: column; gap: 4px">
+        <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 9px; letter-spacing: .14em; color: #D8391B">RETEST</div>
+        <div style="font-size: 13px; line-height: 1.45; color: #D5D9DB">Mide tus máximos antes de programar nada. Tres días separados.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":430,"height":790}}'>
+const TABS = [
+  ['TABLERO', 'M3 3h7.5v7.5H3zM13.5 3H21v7.5h-7.5zM3 13.5h7.5V21H3zM13.5 13.5H21V21h-7.5z'],
+  ['SESIÓN', 'M4 9v6M8 5.5v13M16 5.5v13M20 9v6M8 12h8'],
+  ['REGISTRO', 'M3 20.5h18M6 16l4.5-5.5 3.2 3.2L20 6'],
+  ['PLAN', 'M8.5 6H21M8.5 12H21M8.5 18H21M3.5 6h.01M3.5 12h.01M3.5 18h.01']
+];
+
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { tab: 0, w: 1 }; }
+  renderVals() {
+    const st = this.state;
+    const deload = (n) => n === 8 || n === 12;
+    const weeks = [];
+    for (let n = 1; n <= 12; n++) {
+      weeks.push({
+        n: n,
+        bg: n === st.w ? '#DCFF4F' : deload(n) ? '#241A15' : n < st.w ? '#24272A' : '#17191B',
+        border: n === st.w ? '#DCFF4F' : deload(n) ? '#4A342A' : '#24272A',
+        ink: n === st.w ? '#0E0F10' : deload(n) ? '#B5763F' : n < st.w ? '#B9BEC1' : '#6E7477',
+        pick: () => this.setState({ w: n })
+      });
+    }
+    return {
+      weeks: weeks,
+      label: 'SEM ' + String(st.w).padStart(2, '0') + '/12 · BLOQUE ' + (st.w <= 4 ? 1 : st.w <= 8 ? 2 : 3),
+      note: deload(st.w) ? 'Descarga · 60% del volumen, mismas cargas' : st.w === 1 || st.w === 4 || st.w === 9 ? 'Retest · mide máximos en tres días separados' : 'Carga · sube repeticiones antes que lastre',
+      tabs: TABS.map((t, k) => ({
+        name: t[0], d: t[1],
+        ink: k === st.tab ? '#DCFF4F' : '#6E7477',
+        mark: k === st.tab ? '#DCFF4F' : 'transparent',
+        pick: () => this.setState({ tab: k })
+      }))
+    };
+  }
+}
+</script>
+</body>
+</html>

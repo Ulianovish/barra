@@ -1,0 +1,136 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap">
+  <style>
+    body { margin: 0; }
+    a { color: #DCFF4F; } a:hover { color: #c3e33a; }
+  </style>
+</helmet>
+<div style="width: 430px; height: 900px; background: #0E0F10; color: #F2F4F3; font-family: 'Space Grotesk', system-ui, sans-serif; padding: 22px 20px; display: flex; flex-direction: column; gap: 18px; overflow: hidden; box-sizing: border-box">
+
+  <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 10px; border-bottom: 1px solid #24272A; padding-bottom: 10px">
+    <div style="font-family: 'Anton', 'Arial Narrow', sans-serif; font-size: 21px; text-transform: uppercase">Comida</div>
+    <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 10px; letter-spacing: .14em; color: #DCFF4F">C · TABLERO</div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 7px">
+    <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 9.5px; letter-spacing: .14em; color: #6E7477">01 · CONTADOR</div>
+    <div style="font-size: 12.5px; line-height: 1.45; color: #8A8F93; text-wrap: pretty">Tres casillas de igual peso, con la barra debajo. El punto medio marcado es el reparto del día: a media tarde deberías ir por ahí.</div>
+    <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
+      <sc-for list="{{tiles}}" as="t" hint-placeholder-count="3">
+        <div style="background: #17191B; border: 1px solid #24272A; padding: 11px 12px 12px; display: flex; flex-direction: column; gap: 7px">
+          <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 9px; letter-spacing: .12em; color: #8A8F93">{{t.label}}</div>
+          <div style="display: flex; align-items: baseline; gap: 3px">
+            <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 19px; font-weight: 700; color: {{t.ink}}">{{t.v}}</div>
+            <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 10px; color: #6E7477">{{t.of}}</div>
+          </div>
+          <div style="height: 4px; background: #24272A; position: relative">
+            <div style="height: 100%; width: {{t.pct}}; background: {{t.bar}}"></div>
+            <div style="position: absolute; top: -2px; left: 60%; width: 1px; height: 8px; background: #6E7477"></div>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 7px">
+    <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 9.5px; letter-spacing: .14em; color: #6E7477">02 · BOTÓN DE PORCIÓN</div>
+    <div style="font-size: 12.5px; line-height: 1.45; color: #8A8F93; text-wrap: pretty">Rejilla de tres, 44px, con la cifra encima del nombre para poder barrer la columna con la vista.</div>
+    <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px">
+      <sc-for list="{{quick}}" as="q" hint-placeholder-count="6">
+        <div onClick="{{q.add}}" style="height: 52px; border: 1px solid #2E3236; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; cursor: pointer">
+          <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 12px; font-weight: 700; color: #DCFF4F">{{q.g}}</div>
+          <div style="font-size: 10.5px; color: #B9BEC1">{{q.name}}</div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 7px">
+    <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 9.5px; letter-spacing: .14em; color: #6E7477">03 · INTERRUPTOR</div>
+    <div style="font-size: 12.5px; line-height: 1.45; color: #8A8F93; text-wrap: pretty">Casilla cuadrada en vez de palanca: pega con la retícula y ocupa menos.</div>
+    <div onClick="{{toggleCrea}}" style="background: #17191B; border: 1px solid #24272A; height: 52px; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 0 14px; cursor: pointer">
+      <div style="font-size: 13.5px">Creatina · 5 g</div>
+      <div style="width: 26px; height: 26px; border: 1.5px solid #6E7477; background: {{creaBg}}; display: flex; align-items: center; justify-content: center">
+        <sc-if value="{{crea}}" hint-placeholder-val="{{ true }}">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0E0F10" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"></path></svg>
+        </sc-if>
+      </div>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 7px; flex-grow: 1">
+    <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 9.5px; letter-spacing: .14em; color: #6E7477">04 · EN EL TABLERO</div>
+    <div style="font-size: 12.5px; line-height: 1.45; color: #8A8F93; text-wrap: pretty">La misma pieza, encogida, vive en la portada: dos barras y los cuatro atajos más usados. No hay que entrar a ningún sitio para sumar un batido.</div>
+    <div style="background: #17191B; border: 1px solid #24272A; padding: 11px 12px; display: flex; flex-direction: column; gap: 9px">
+      <div style="display: flex; gap: 12px">
+        <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 5px">
+          <div style="display: flex; align-items: baseline; justify-content: space-between"><div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 9px; letter-spacing: .12em; color: #8A8F93">PROTEÍNA</div><div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 10.5px; font-weight: 700">{{protTxt}}</div></div>
+          <div style="height: 3px; background: #24272A"><div style="height: 100%; width: {{protPct}}; background: #DCFF4F"></div></div>
+        </div>
+        <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 5px">
+          <div style="display: flex; align-items: baseline; justify-content: space-between"><div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 9px; letter-spacing: .12em; color: #8A8F93">AGUA</div><div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 10.5px; font-weight: 700">{{aguaTxt}}</div></div>
+          <div style="height: 3px; background: #24272A"><div style="height: 100%; width: {{aguaPct}}; background: #4A5257"></div></div>
+        </div>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 5px">
+        <sc-for list="{{mini}}" as="m" hint-placeholder-count="4">
+          <div onClick="{{m.add}}" style="height: 44px; border: 1px solid #2E3236; display: flex; align-items: center; justify-content: center; font-family: 'Space Mono', ui-monospace, monospace; font-size: 10.5px; color: #D5D9DB; cursor: pointer">{{m.label}}</div>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":430,"height":900}}'>
+const QUICK = [
+  { name: 'pechuga', g: '+35', p: 35 },
+  { name: 'batido', g: '+24', p: 24 },
+  { name: '3 huevos', g: '+19', p: 19 },
+  { name: 'yogur', g: '+17', p: 17 },
+  { name: 'atún', g: '+24', p: 24 },
+  { name: 'lentejas', g: '+18', p: 18 }
+];
+
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { prot: 92, agua: 1750, crea: false }; }
+  renderVals() {
+    const st = this.state;
+    const addP = (g) => () => this.setState({ prot: Math.min(220, st.prot + g) });
+    const addA = (ml) => () => this.setState({ agua: Math.min(4500, st.agua + ml) });
+    const protPct = Math.min(100, Math.round((st.prot / 150) * 100)) + '%';
+    const aguaPct = Math.min(100, Math.round((st.agua / 3500) * 100)) + '%';
+    return {
+      tiles: [
+        { label: 'PROTEÍNA', v: st.prot, of: '/150 g', pct: protPct, ink: '#F2F4F3', bar: '#DCFF4F' },
+        { label: 'AGUA', v: (st.agua / 1000).toFixed(1).replace('.', ','), of: '/3,5 L', pct: aguaPct, ink: '#F2F4F3', bar: '#4A5257' },
+        { label: 'CREATINA', v: st.crea ? '5' : '0', of: '/5 g', pct: st.crea ? '100%' : '0%', ink: st.crea ? '#DCFF4F' : '#6E7477', bar: '#DCFF4F' }
+      ],
+      quick: QUICK.map((q) => ({ name: q.name, g: q.g, add: addP(q.p) })),
+      mini: [
+        { label: '+35 g', add: addP(35) },
+        { label: '+24 g', add: addP(24) },
+        { label: '+17 g', add: addP(17) },
+        { label: '+500 ml', add: addA(500) }
+      ],
+      protTxt: st.prot + '/150',
+      protPct: protPct,
+      aguaTxt: (st.agua / 1000).toFixed(1).replace('.', ',') + '/3,5',
+      aguaPct: aguaPct,
+      crea: st.crea,
+      creaBg: st.crea ? '#DCFF4F' : 'transparent',
+      toggleCrea: () => this.setState({ crea: !st.crea })
+    };
+  }
+}
+</script>
+</body>
+</html>

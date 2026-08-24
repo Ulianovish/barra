@@ -1,0 +1,96 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap">
+  <style>
+    body { margin: 0; }
+    a { color: #E0A54B; } a:hover { color: #c98d34; }
+  </style>
+</helmet>
+<div style="width: 430px; height: 870px; background: #191B1E; color: #EDEAE3; font-family: 'Space Grotesk', system-ui, sans-serif; padding: 22px 20px; display: flex; flex-direction: column; gap: 18px; overflow: hidden; box-sizing: border-box">
+
+  <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 10px; border-bottom: 1px solid #3A3F45; padding-bottom: 10px">
+    <div style="font-family: 'Anton', 'Arial Narrow', sans-serif; font-size: 21px; text-transform: uppercase">Skills</div>
+    <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 10px; letter-spacing: .14em; color: #E0A54B">A · TIZA</div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 7px">
+    <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 9.5px; letter-spacing: .14em; color: #6B7178">01 · ESCALERA</div>
+    <div style="font-size: 12.5px; line-height: 1.45; color: #9BA2A9; text-wrap: pretty">Una escalera por pantalla, de abajo arriba como se sube. La cifra grande deja de ser un porcentaje abstracto y dice cuántos peldaños faltan.</div>
+    <div style="background: #101215; border-radius: 3px; padding: 16px; display: flex; flex-direction: column; gap: 14px">
+      <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 12px">
+        <div style="display: flex; flex-direction: column; gap: 3px">
+          <div style="font-family: 'Anton', 'Arial Narrow', sans-serif; font-size: 26px; text-transform: uppercase; line-height: 1">Muscle-up</div>
+          <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 10.5px; color: #6B7178">meta del programa · semana 12</div>
+        </div>
+        <div style="text-align: right">
+          <div style="font-family: 'Anton', 'Arial Narrow', sans-serif; font-size: 34px; color: #E0A54B; line-height: .9">{{faltan}}</div>
+          <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 9.5px; letter-spacing: .1em; color: #6B7178">PELDAÑOS</div>
+        </div>
+      </div>
+      <div style="display: flex; flex-direction: column-reverse; gap: 2px">
+        <sc-for list="{{rungs}}" as="r" hint-placeholder-count="7">
+          <div onClick="{{r.pick}}" style="height: 44px; display: flex; align-items: center; gap: 12px; cursor: pointer; padding: 0 2px">
+            <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 10px; color: #6B7178; width: 14px; flex: 0 0 14px">{{r.i}}</div>
+            <div style="width: 52px; height: 12px; flex: 0 0 52px; border: 1.5px solid {{r.stroke}}; background: {{r.fill}}; border-radius: 1px"></div>
+            <div style="font-size: 13.5px; color: {{r.ink}}; font-weight: {{r.weight}}; flex-grow: 1">{{r.name}}</div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 7px; flex-grow: 1">
+    <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 9.5px; letter-spacing: .14em; color: #6B7178">02 · PELDAÑO · ESTADOS</div>
+    <div style="font-size: 12.5px; line-height: 1.45; color: #9BA2A9; text-wrap: pretty">Tres estados, no dos: lo que ya haces, dónde estás, y el siguiente — resaltado, porque es la única fila que importa hoy.</div>
+    <div style="background: #101215; border-radius: 3px; padding: 8px 16px">
+      <div style="height: 44px; display: flex; align-items: center; gap: 12px">
+        <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 10px; color: #6B7178; width: 14px; flex: 0 0 14px">2</div>
+        <div style="width: 52px; height: 12px; flex: 0 0 52px; border: 1.5px solid #6B7178; background: #6B7178; border-radius: 1px"></div>
+        <div style="font-size: 13.5px; color: #9BA2A9; flex-grow: 1">Hecho · ya lo haces limpio</div>
+      </div>
+      <div style="height: 44px; display: flex; align-items: center; gap: 12px">
+        <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 10px; color: #6B7178; width: 14px; flex: 0 0 14px">3</div>
+        <div style="width: 52px; height: 12px; flex: 0 0 52px; border: 1.5px solid #E0A54B; background: #E0A54B; border-radius: 1px; box-shadow: 0 0 0 3px #3A2E1C"></div>
+        <div style="font-size: 13.5px; color: #EDEAE3; font-weight: 700; flex-grow: 1">Aquí estás</div>
+      </div>
+      <div style="height: 44px; display: flex; align-items: center; gap: 12px">
+        <div style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 10px; color: #6B7178; width: 14px; flex: 0 0 14px">4</div>
+        <div style="width: 52px; height: 12px; flex: 0 0 52px; border: 1.5px dashed #4EB6C4; background: transparent; border-radius: 1px"></div>
+        <div style="font-size: 13.5px; color: #4EB6C4; flex-grow: 1">Lo siguiente · a lo que apuntas</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":430,"height":870}}'>
+const MU = ['Pull-up estricto × 5', 'Pull-up explosivo al pecho', 'Pull-up al esternón', 'Dip en barra', 'Transición con banda', 'Muscle-up asistido', 'Muscle-up estricto'];
+
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { lvl: 2 }; }
+  renderVals() {
+    const lvl = this.state.lvl;
+    return {
+      faltan: MU.length - 1 - lvl,
+      rungs: MU.map((name, k) => ({
+        i: k + 1,
+        name: name,
+        fill: k < lvl ? '#6B7178' : k === lvl ? '#E0A54B' : 'transparent',
+        stroke: k < lvl ? '#6B7178' : k === lvl ? '#E0A54B' : k === lvl + 1 ? '#4EB6C4' : '#3A3F45',
+        ink: k < lvl ? '#9BA2A9' : k === lvl ? '#EDEAE3' : k === lvl + 1 ? '#4EB6C4' : '#6B7178',
+        weight: k === lvl ? '700' : '400',
+        pick: () => this.setState({ lvl: k === lvl ? k - 1 : k })
+      }))
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,193 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;600;700&display=swap">
+  <style>
+    body { margin: 0; }
+    a { color: #A6552F; } a:hover { color: #7f3f22; }
+  </style>
+</helmet>
+<div style="width: 390px; height: 844px; background: #F4F0E7; color: #23201B; font-family: 'Work Sans', system-ui, sans-serif; display: flex; flex-direction: column; overflow: hidden; box-sizing: border-box">
+
+  <div style="padding: 20px 22px 14px; display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; border-bottom: 1px solid #D8CEB8">
+    <div style="display: flex; flex-direction: column; gap: 1px">
+      <div style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 10px; letter-spacing: .18em; text-transform: uppercase; color: #8C8474">Agosto</div>
+      <div style="font-family: 'Instrument Serif', Georgia, serif; font-size: 34px; line-height: 1">Lunes 24</div>
+    </div>
+    <div style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: #8C8474; text-align: right; line-height: 1.6">Semana 1<br>Bloque 1</div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: #D8CEB8; border-bottom: 1px solid #D8CEB8">
+    <div style="background: #F4F0E7; padding: 12px 14px; display: flex; flex-direction: column; gap: 7px">
+      <div style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 9.5px; letter-spacing: .12em; text-transform: uppercase; color: #8C8474">Entreno</div>
+      <div style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 19px; font-weight: 700; line-height: 1">{{seriesDone}}<span style="font-size: 12px; font-weight: 400; color: #8C8474">/37</span></div>
+      <div style="height: 3px; background: #E3DBCB"><div style="height: 100%; width: {{seriesPct}}; background: #5E7A3C"></div></div>
+    </div>
+    <div style="background: #F4F0E7; padding: 12px 14px; display: flex; flex-direction: column; gap: 7px">
+      <div style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 9.5px; letter-spacing: .12em; text-transform: uppercase; color: #8C8474">Proteína</div>
+      <div style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 19px; font-weight: 700; line-height: 1">{{prot}}<span style="font-size: 12px; font-weight: 400; color: #8C8474">/150 g</span></div>
+      <div style="height: 3px; background: #E3DBCB"><div style="height: 100%; width: {{protPct}}; background: #A6552F"></div></div>
+    </div>
+    <div style="background: #F4F0E7; padding: 12px 14px; display: flex; flex-direction: column; gap: 7px">
+      <div style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 9.5px; letter-spacing: .12em; text-transform: uppercase; color: #8C8474">Agua</div>
+      <div style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 19px; font-weight: 700; line-height: 1">{{water}}<span style="font-size: 12px; font-weight: 400; color: #8C8474">/3,5 L</span></div>
+      <div style="height: 3px; background: #E3DBCB"><div style="height: 100%; width: {{waterPct}}; background: #3E6E86"></div></div>
+    </div>
+  </div>
+
+  <div style="flex-grow: 1; padding: 16px 22px 0; display: flex; flex-direction: column; gap: 16px; min-height: 0; position: relative">
+    <div style="position: absolute; left: 30px; top: 22px; bottom: 12px; width: 1px; background: #D8CEB8"></div>
+
+    <div style="display: flex; gap: 16px; align-items: flex-start; position: relative">
+      <div style="width: 17px; flex: 0 0 17px; display: flex; justify-content: center; padding-top: 4px"><div style="width: 7px; height: 7px; border-radius: 4px; background: #5E7A3C"></div></div>
+      <div style="flex-grow: 1; display: flex; align-items: baseline; justify-content: space-between; gap: 10px">
+        <div style="display: flex; flex-direction: column; gap: 1px">
+          <div style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 9.5px; letter-spacing: .12em; color: #8C8474">07:10</div>
+          <div style="font-size: 14px; font-weight: 500">Pesaje en ayunas</div>
+        </div>
+        <div style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 15px; font-weight: 700">78,4 kg</div>
+      </div>
+    </div>
+
+    <div onClick="{{toggleDes}}" style="display: flex; gap: 16px; align-items: flex-start; cursor: pointer; position: relative">
+      <div style="width: 17px; flex: 0 0 17px; display: flex; justify-content: center; padding-top: 4px"><div style="width: 7px; height: 7px; border-radius: 4px; background: {{desDot}}; border: 1px solid #A6552F"></div></div>
+      <div style="flex-grow: 1; display: flex; align-items: baseline; justify-content: space-between; gap: 10px">
+        <div style="display: flex; flex-direction: column; gap: 1px">
+          <div style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 9.5px; letter-spacing: .12em; color: #8C8474">08:00 · DESAYUNO</div>
+          <div style="font-size: 14px; font-weight: 500; color: {{desInk}}">4 huevos + avena + yogur</div>
+        </div>
+        <div style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 15px; font-weight: 700; color: {{desInk}}">38 g</div>
+      </div>
+    </div>
+
+    <div style="display: flex; gap: 16px; align-items: flex-start; position: relative">
+      <div style="width: 17px; flex: 0 0 17px; display: flex; justify-content: center; padding-top: 4px"><div style="width: 7px; height: 7px; border-radius: 4px; background: #F4F0E7; border: 1px solid #3E6E86"></div></div>
+      <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 8px">
+        <div style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 9.5px; letter-spacing: .12em; color: #8C8474">A LO LARGO DEL DÍA · AGUA</div>
+        <div style="display: flex; gap: 7px">
+          <div onClick="{{water250}}" style="flex-grow: 1; border: 1px solid #C9BFAA; padding: 14px 0; text-align: center; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; font-weight: 600; cursor: pointer; background: #FBF9F4">+250 ml</div>
+          <div onClick="{{water500}}" style="flex-grow: 1; border: 1px solid #C9BFAA; padding: 14px 0; text-align: center; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; font-weight: 600; cursor: pointer; background: #FBF9F4">+500 ml</div>
+          <div onClick="{{water750}}" style="flex-grow: 1; border: 1px solid #C9BFAA; padding: 14px 0; text-align: center; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; font-weight: 600; cursor: pointer; background: #FBF9F4">+750 ml</div>
+        </div>
+      </div>
+    </div>
+
+    <div onClick="{{toggleCom}}" style="display: flex; gap: 16px; align-items: flex-start; cursor: pointer; position: relative">
+      <div style="width: 17px; flex: 0 0 17px; display: flex; justify-content: center; padding-top: 4px"><div style="width: 7px; height: 7px; border-radius: 4px; background: {{comDot}}; border: 1px solid #A6552F"></div></div>
+      <div style="flex-grow: 1; display: flex; align-items: baseline; justify-content: space-between; gap: 10px">
+        <div style="display: flex; flex-direction: column; gap: 1px">
+          <div style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 9.5px; letter-spacing: .12em; color: #8C8474">13:30 · COMIDA</div>
+          <div style="font-size: 14px; font-weight: 500; color: {{comInk}}">Pollo 200 g + arroz + lentejas</div>
+        </div>
+        <div style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 15px; font-weight: 700; color: {{comInk}}">52 g</div>
+      </div>
+    </div>
+
+    <div style="display: flex; gap: 16px; align-items: flex-start; position: relative">
+      <div style="width: 17px; flex: 0 0 17px; display: flex; justify-content: center; padding-top: 4px"><div style="width: 9px; height: 9px; background: #23201B"></div></div>
+      <div style="flex-grow: 1; border: 1px solid #C9BFAA; background: #FBF9F4; padding: 12px 13px; display: flex; flex-direction: column; gap: 10px">
+        <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 10px">
+          <div style="display: flex; flex-direction: column; gap: 1px">
+            <div style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 9.5px; letter-spacing: .12em; color: #8C8474">18:00 · ENTRENO · CASA</div>
+            <div style="font-family: 'Instrument Serif', Georgia, serif; font-size: 21px; line-height: 1.1">Empuje vertical</div>
+          </div>
+          <div style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 10px; color: #8C8474; white-space: nowrap">60 min</div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 1px; background: #E3DBCB">
+          <sc-for list="{{blocks}}" as="b" hint-placeholder-count="4">
+            <div onClick="{{b.add}}" style="background: #FBF9F4; display: flex; align-items: center; gap: 10px; padding: 13px 2px; cursor: pointer">
+              <div style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11px; font-weight: 700; color: #A6552F; width: 13px; flex: 0 0 13px">{{b.tag}}</div>
+              <div style="font-size: 13px; flex-grow: 1">{{b.name}}</div>
+              <div style="height: 4px; width: 62px; flex: 0 0 62px; background: #E3DBCB"><div style="height: 100%; width: {{b.pct}}; background: #5E7A3C"></div></div>
+              <div style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11px; font-weight: 700; width: 34px; flex: 0 0 34px; text-align: right">{{b.count}}</div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+
+    <div onClick="{{toggleCena}}" style="display: flex; gap: 16px; align-items: flex-start; cursor: pointer; position: relative">
+      <div style="width: 17px; flex: 0 0 17px; display: flex; justify-content: center; padding-top: 4px"><div style="width: 7px; height: 7px; border-radius: 4px; background: {{cenaDot}}; border: 1px solid #A6552F"></div></div>
+      <div style="flex-grow: 1; display: flex; align-items: baseline; justify-content: space-between; gap: 10px">
+        <div style="display: flex; flex-direction: column; gap: 1px">
+          <div style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 9.5px; letter-spacing: .12em; color: #8C8474">21:00 · CENA</div>
+          <div style="font-size: 14px; font-weight: 500; color: {{cenaInk}}">Atún + queso fresco + fruta</div>
+        </div>
+        <div style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 15px; font-weight: 700; color: {{cenaInk}}">44 g</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div onClick="{{toggleCrea}}" style="height: 68px; flex: 0 0 68px; border-top: 1px solid #D8CEB8; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 0 22px; cursor: pointer">
+    <div style="display: flex; flex-direction: column; gap: 1px">
+      <div style="font-size: 14px; font-weight: 500">Creatina · 5 g</div>
+      <div style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 10px; color: #8C8474">{{faltanTxt}}</div>
+    </div>
+    <div style="width: 26px; height: 26px; border: 1.5px solid #23201B; display: flex; align-items: center; justify-content: center; background: {{creaBg}}">
+      <sc-if value="{{crea}}" hint-placeholder-val="{{ true }}">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#F4F0E7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"></path></svg>
+      </sc-if>
+    </div>
+  </div>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+const BLOCKS = [
+  { tag: 'W', name: 'Calentamiento', t: 9 },
+  { tag: 'A', name: 'Skill · Handstand', t: 8 },
+  { tag: 'B', name: 'Fuerza principal', t: 8 },
+  { tag: 'C', name: 'Accesorio + core', t: 12 }
+];
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { done: { des: true, com: true, cena: false }, crea: false, water: 1750, sets: [9, 8, 4, 0] };
+  }
+  renderVals() {
+    const d = this.state.done;
+    const prot = (d.des ? 38 : 0) + (d.com ? 52 : 0) + (d.cena ? 44 : 0);
+    const sets = this.state.sets;
+    const seriesDone = sets.reduce((a, b) => a + b, 0);
+    const ink = (on) => (on ? '#8C8474' : '#23201B');
+    const dot = (on) => (on ? '#A6552F' : '#F4F0E7');
+    const toggle = (k) => () => {
+      const nd = Object.assign({}, this.state.done);
+      nd[k] = !nd[k];
+      this.setState({ done: nd });
+    };
+    const addWater = (ml) => () => this.setState({ water: Math.min(4000, this.state.water + ml) });
+    return {
+      prot: prot,
+      protPct: Math.min(100, Math.round((prot / 150) * 100)) + '%',
+      faltanTxt: Math.max(0, 150 - prot) + ' g de proteína por delante',
+      water: (this.state.water / 1000).toFixed(1).replace('.', ','),
+      waterPct: Math.min(100, Math.round((this.state.water / 3500) * 100)) + '%',
+      seriesDone: seriesDone,
+      seriesPct: Math.min(100, Math.round((seriesDone / 37) * 100)) + '%',
+      blocks: BLOCKS.map((b, k) => ({
+        tag: b.tag, name: b.name, count: sets[k] + '/' + b.t,
+        pct: Math.round((sets[k] / b.t) * 100) + '%',
+        add: () => { const s = sets.slice(); s[k] = s[k] >= b.t ? 0 : s[k] + 1; this.setState({ sets: s }); }
+      })),
+      desInk: ink(d.des), desDot: dot(d.des), toggleDes: toggle('des'),
+      comInk: ink(d.com), comDot: dot(d.com), toggleCom: toggle('com'),
+      cenaInk: ink(d.cena), cenaDot: dot(d.cena), toggleCena: toggle('cena'),
+      crea: this.state.crea,
+      creaBg: this.state.crea ? '#23201B' : '#F4F0E7',
+      toggleCrea: () => this.setState({ crea: !this.state.crea }),
+      water250: addWater(250), water500: addWater(500), water750: addWater(750)
+    };
+  }
+}
+</script>
+</body>
+</html>
