@@ -1,0 +1,6 @@
+Deja aquí los clips de los ejercicios y regístralos en CLIP dentro de index.html:
+
+  const CLIP={'Pike push-up elevado':'pike-elevado.mp4'};
+
+El nombre tiene que coincidir exacto con el del ejercicio.
+MP4 y WebM se pintan en un reproductor; GIF y WebP animado, como imagen.

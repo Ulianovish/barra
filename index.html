@@ -101,7 +101,7 @@ main{padding:16px;max-width:640px;margin:0 auto}
   padding:12px 13px;border-radius:0 var(--r) var(--r) 0}
 .howpanel.on{display:flex}
 .howpanel p{margin:0;font-size:13.5px;line-height:1.5;color:var(--ink);text-wrap:pretty}
-.howpanel video{width:100%;display:block;border-radius:var(--r);background:#000}
+.howpanel video,.howpanel img{width:100%;display:block;border-radius:var(--r);background:#000}
 .slab.small{height:150px}
 .slab.small .tg{height:44px}
 
@@ -783,6 +783,15 @@ function pipsHTML(L,dd,i){
 }
 function doneCount(L,dd){return L.filter(e=>(dd.sets[e.id]||0)>=e.target).length;}
 function howAbierto(e){return (HOWTO[e.n]||CLIP[e.n])?howOpen(e.n):false;}
+/* GIF y WebP animado son imágenes; MP4 y WebM van en un reproductor.
+   El peso manda: el mismo clip en MP4 pesa varias veces menos que en GIF. */
+function clipHTML(f){
+  if(!f)return '';
+  const ext=(f.split('.').pop()||'').toLowerCase();
+  if(['gif','webp','png','jpg','jpeg','avif'].indexOf(ext)>=0)
+    return '<img src="media/'+esc(f)+'" alt="" loading="lazy">';
+  return '<video src="media/'+esc(f)+'" muted loop playsinline autoplay preload="none"></video>';
+}
 function howHTML(e){
   const txt=HOWTO[e.n], clip=CLIP[e.n];
   if(!txt&&!clip)return '';
@@ -790,7 +799,7 @@ function howHTML(e){
   return '<button class="howbtn'+(on?' on':'')+'" id="howBtn">Cómo se hace'+
     '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>'+
     '<div class="howpanel'+(on?' on':'')+'">'+
-      (clip?'<video src="media/'+esc(clip)+'" muted loop playsinline autoplay preload="none"></video>':'')+
+      clipHTML(clip)+
       (txt?'<p>'+esc(txt)+'</p>':'')+
     '</div>';
 }
