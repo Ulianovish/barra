@@ -42,13 +42,17 @@ p.lead{font-size:12.5px;line-height:1.45;color:var(--muted);margin:0 0 13px;text
 .brand span{color:var(--amber)}
 .top-meta{font-family:'Space Mono',ui-monospace,monospace;font-size:10.5px;letter-spacing:.08em;color:var(--muted)}
 .weeks{display:flex;gap:3px;margin-top:7px;align-items:flex-end;margin-bottom:2px}
-.wk{flex:1;height:44px;display:flex;align-items:flex-end;background:none;border:0;padding:0;cursor:pointer}
+.wk{flex:1;height:30px;display:flex;align-items:flex-end;background:none;border:0;padding:0;cursor:pointer}
 .wk i{display:block;width:100%;border-radius:1px;background:var(--line)}
 .week-note{display:none}
-.top-sub{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-top:5px;min-height:14px}
-.top-sub .l{font-family:'Space Mono',ui-monospace,monospace;font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--dim);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.top-sub .r{font-family:'Space Mono',ui-monospace,monospace;font-size:13px;font-weight:700;color:var(--amber);white-space:nowrap}
-.top-sub .r span{color:var(--dim)}
+.top-sub{display:flex;align-items:center;gap:6px;margin-top:4px;min-height:40px}
+.top-sub button{width:36px;height:40px;flex:0 0 36px;border:0;background:none;padding:0;
+  display:flex;align-items:center;justify-content:center;cursor:pointer}
+.top-sub.hidenav button{visibility:hidden}
+.top-sub .l{flex:1;text-align:center;font-family:'Space Mono',ui-monospace,monospace;font-size:10px;letter-spacing:.11em;text-transform:uppercase;color:var(--dim);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.top-sub.other .l{color:var(--amber)}
+.top-meta.count{color:var(--amber);font-size:13px;font-weight:700}
+.top-meta.count span{color:var(--dim)}
 
 /* ---------- estructura ---------- */
 main{padding:16px;max-width:640px;margin:0 auto}
@@ -102,6 +106,9 @@ main{padding:16px;max-width:640px;margin:0 auto}
 .howpanel.on{display:flex}
 .howpanel p{margin:0;font-size:13.5px;line-height:1.5;color:var(--ink);text-wrap:pretty}
 .howpanel video,.howpanel img{width:100%;display:block;border-radius:var(--r);background:#000}
+.backtoday{width:100%;height:44px;border:0;border-radius:var(--r);background:#3A2E1C;color:var(--amber);
+  font-family:'Space Mono',ui-monospace,monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;
+  cursor:pointer;margin-bottom:10px}
 .slab.small{height:150px}
 .slab.small .tg{height:44px}
 
@@ -135,6 +142,8 @@ main{padding:16px;max-width:640px;margin:0 auto}
 .restbox.ready .rest-bar i{background:var(--ok)}
 .rest-lab{font-family:'Space Mono',ui-monospace,monospace;font-size:10px;letter-spacing:.1em;color:var(--dim);min-height:13px}
 .restbox.ready .rest-lab{color:var(--ok)}
+.restbox.on{position:fixed;left:0;right:0;bottom:calc(63px + env(safe-area-inset-bottom));z-index:45;
+  margin:0;border-radius:0;border-top:1px solid var(--line);padding:10px 16px}
 .presets{display:none;gap:6px}
 .restbox.open .presets{display:flex}
 .rest-adj{width:44px;height:44px;flex:0 0 44px;border:1px solid var(--line);border-radius:var(--r);background:none;display:flex;align-items:center;justify-content:center;cursor:pointer}
@@ -264,7 +273,11 @@ footer{padding:24px 4px 8px;font-family:'Space Mono',ui-monospace,monospace;font
     <div class="brand">BAR<span>RA</span></div>
     <div class="top-meta" id="topMeta">—</div>
   </div>
-  <div class="top-sub"><div class="l" id="topSubL"></div><div class="r" id="topSubR"></div></div>
+  <div class="top-sub" id="topSub">
+    <button id="dayPrev" aria-label="Día anterior"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9BA2A9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
+    <div class="l" id="topSubL"></div>
+    <button id="dayNext" aria-label="Día siguiente"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9BA2A9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button>
+  </div>
   <div class="weeks" id="weeks"></div>
 </header>
 
@@ -601,7 +614,7 @@ function day(k){if(!D.daily[k])D.daily[k]={sets:{},notes:{},prot:0,water:0,crea:
 
 function weekNum(){
   if(!D.start)return 1;
-  const s=new Date(D.start+'T00:00:00'), n=new Date(today()+'T00:00:00');
+  const s=new Date(D.start+'T00:00:00'), n=new Date(vKey()+'T00:00:00');
   const w=Math.floor((n-s)/864e5/7)+1;
   return Math.max(1,w);
 }
@@ -712,7 +725,7 @@ function targetOf(p){const m=/^(\d+)\s*×/.exec(p||'');return m?+m[1]:1;}
 
 /* Los ejercicios del día, aplanados y ya filtrados por semana. */
 function exList(){
-  const S=SESSIONS[new Date().getDay()], w=weekNum(), out=[];
+  const S=SESSIONS[vDow()], w=weekNum(), out=[];
   if(!S)return out;
   S.blocks.forEach((b,bi)=>b.items.forEach((it,ii)=>{
     if(it.from&&w>=1&&w<it.from)return;
@@ -721,14 +734,38 @@ function exList(){
   }));
   return out;
 }
+/* La fecha que se está mirando. Null significa hoy. Se guarda como fecha
+   completa y no como día de la semana: así no hay duda de a qué jueves te
+   refieres, y lo que registres cae en el día correcto. */
+let viewDate=null;
+const MESES=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+const keyOf=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+const vKey=()=>viewDate||today();
+const vDate=()=>new Date(vKey()+'T00:00:00');
+const vDow=()=>vDate().getDay();
+const esHoy=()=>vKey()===today();
+function fechaLarga(k){const d=new Date(k+'T00:00:00');return DAYS[d.getDay()]+' '+d.getDate()+' de '+MESES[d.getMonth()];}
+function verFecha(k){
+  viewDate=(k===today())?null:k;
+  curEx=null;curDay=null;howManual={};
+  renderTop();renderHoy();renderFuel();
+}
+function moverDia(n){const d=vDate();d.setDate(d.getDate()+n);verFecha(keyOf(d));window.scrollTo(0,0);}
+function irADia(i){
+  const d=vDate(), monday=new Date(d);
+  monday.setDate(d.getDate()-((d.getDay()+6)%7));
+  const t=new Date(monday); t.setDate(monday.getDate()+((i+6)%7));
+  verFecha(keyOf(t));
+}
+
 let curEx=null, curDay=null;
 /* El ejercicio en pantalla queda fijado por renderHoy. Si se recalculara en
    cada toque avanzaría solo mientras la tarjeta se queda quieta, y acabarías
    registrando series en un ejercicio que no estás viendo. */
 function curIdx(L){
-  if(curDay!==today()){curDay=today();curEx=null;}
+  if(curDay!==vKey()){curDay=vKey();curEx=null;}
   if(curEx!=null&&curEx<L.length)return curEx;
-  const dd=day(today());
+  const dd=day(vKey());
   const i=L.findIndex(e=>(dd.sets[e.id]||0)<e.target);
   return i<0?0:i;
 }
@@ -745,9 +782,12 @@ function renderTop(){
   const w=weekNum();
   document.getElementById('topMeta').textContent=
     w>12?'PROGRAMA COMPLETO':'SEM '+String(w).padStart(2,'0')+' · BLOQUE '+blockNum(w);
-  const on=document.querySelector('.view.on');
-  if(!on||on.id!=='v-hoy'){document.getElementById('topSubL').textContent=weekLabel(Math.min(w,12));
-    document.getElementById('topSubR').textContent='';}
+  const on=document.querySelector('.view.on'), enHoy=on&&on.id==='v-hoy';
+  document.getElementById('topSub').classList.toggle('hidenav',!enHoy);
+  if(!enHoy){
+    marcaDia(weekLabel(Math.min(w,12)));
+    document.getElementById('topMeta').classList.remove('count');
+  }
   const el=document.getElementById('weeks');el.innerHTML='';
   for(let i=1;i<=12;i++){
     const b=document.createElement('button');
@@ -816,13 +856,22 @@ function fuelStripHTML(dd){
   '</button>';
 }
 
+/* Sale solo cuando estás mirando otro día: si es hoy no hay nada que deshacer. */
+function dayNavHTML(){
+  return esHoy()?'':'<button class="backtoday" id="backToday">Volver a hoy</button>';
+}
+function marcaDia(txt){
+  document.getElementById('topSub').classList.toggle('other',!esHoy());
+  document.getElementById('topSubL').textContent=txt;
+}
+const fechaCorta=k=>{const d=new Date(k+'T00:00:00');return DAYS[d.getDay()].slice(0,3)+' '+d.getDate()+' '+MESES[d.getMonth()].slice(0,3);};
 function renderHoy(){
-  const host=document.getElementById('v-hoy'), dow=new Date().getDay(), w=weekNum(), dd=day(today());
+  const host=document.getElementById('v-hoy'), dow=vDow(), w=weekNum(), dd=day(vKey());
 
   if(dow===0){
-    document.getElementById('topSubL').textContent='DOMINGO · DESCANSO';
-    document.getElementById('topSubR').textContent='';
-    host.innerHTML='<div class="restday"><div class="eyebrow">Domingo</div>'+
+    marcaDia((esHoy()?'DOMINGO':fechaCorta(vKey()))+' · DESCANSO');
+    document.getElementById('topMeta').classList.remove('count');
+    host.innerHTML=dayNavHTML()+'<div class="restday"><div class="eyebrow">Domingo</div>'+
       '<div class="disp">Descanso</div>'+
       '<p>Obligatorio, no opcional. Con seis días de entrenamiento, hoy es donde el cuerpo cobra el trabajo de la semana. El handstand se aprende durmiendo.</p></div>'+
       '<div class="note">Aprovecha para pesarte en ayunas, revisar los videos de la semana y actualizar tus escaleras en <b>Skills</b>.</div>'+
@@ -835,10 +884,12 @@ function renderHoy(){
   if(!e){host.innerHTML='<div class="restday"><div class="disp">Sin sesión</div></div>';return;}
   const n=dd.sets[e.id]||0, last=i===L.length-1;
 
-  document.getElementById('topSubL').textContent=
-    DAYS[dow]+' · '+(S.place==='casa'?'CASA':'PARQUE')+' · '+S.name;
-  document.getElementById('topSubR').innerHTML=doneCount(L,dd)+'<span>/'+L.length+'</span>';
-  let h='';
+  marcaDia((esHoy()?DAYS[dow].slice(0,3):fechaCorta(vKey()))+' · SEM '+String(w).padStart(2,'0')+
+           ' · '+(S.place==='casa'?'CASA':'PARQUE')+' · '+S.name);
+  const tm=document.getElementById('topMeta');
+  tm.classList.add('count');
+  tm.innerHTML=doneCount(L,dd)+'<span>/'+L.length+'</span>';
+  let h=dayNavHTML();
 
   /* Los avisos de la semana solo al empezar la sesión: después estorban. */
   if(i===0){
@@ -887,12 +938,12 @@ function renderHoy(){
 function paintSets(){
   const L=exList(), i=curIdx(L), e=L[i];
   if(!e)return;
-  const dd=day(today()), n=dd.sets[e.id]||0;
+  const dd=day(vKey()), n=dd.sets[e.id]||0;
   const hit=document.getElementById('slabHit');
   if(hit)hit.innerHTML=tallyHTML(n);
   const cnt=document.getElementById('slabCnt');
   if(cnt)cnt.textContent=n+' DE '+e.target+(e.target===1?' SERIE':' SERIES');
-  document.getElementById('topSubR').innerHTML=doneCount(L,dd)+'<span>/'+L.length+'</span>';
+  document.getElementById('topMeta').innerHTML=doneCount(L,dd)+'<span>/'+L.length+'</span>';
   const p=document.getElementById('pips');
   if(p)p.innerHTML=pipsHTML(L,dd,i);
 }
@@ -985,7 +1036,7 @@ function renderLog(){
    RENDER · COMIDA
    ============================================================ */
 function renderFuel(){
-  const dd=day(today());
+  const dd=day(vKey());
   const fp=Math.max(0,150-(dd.prot||0)), fa=Math.max(0,3.5-(dd.water||0));
   document.getElementById('fuelCounters').innerHTML=
     '<div class="mrow"><div class="mtop"><div style="display:flex;align-items:baseline;gap:8px">'+
@@ -1007,7 +1058,7 @@ function renderFuel(){
    RENDER · PLAN
    ============================================================ */
 function renderPlan(){
-  const hoy=new Date().getDay();
+  const hoy=vDow();
   document.getElementById('weekRows').innerHTML=[1,2,3,4,5,6,0].map(i=>{
     const s=SESSIONS[i], name=s?s.name+' · '+s.focus:'Descanso completo';
     const ic=s?(s.place==='casa'?ICON.casa:ICON.parque):'';
@@ -1078,7 +1129,7 @@ function goView(v){
   document.querySelectorAll('.view').forEach(s=>s.classList.remove('on'));
   document.getElementById('v-'+v).classList.add('on');
   window.scrollTo(0,0);
-  if(v==='hoy')renderHoy(); else renderTop();
+  if(v==='hoy'){renderTop();renderHoy();} else renderTop();
   if(v==='log')renderLog();
   if(v==='fuel')renderFuel();
   if(v==='plan')renderPlan();
@@ -1099,11 +1150,17 @@ document.addEventListener('click',e=>{
     return;
   }
 
+  if(t.closest('#dayPrev')){moverDia(-1);return;}
+  if(t.closest('#dayNext')){moverDia(1);return;}
+  if(t.closest('#backToday')){verFecha(today());window.scrollTo(0,0);return;}
+  const dr=t.closest('[data-day]');
+  if(dr){irADia(+dr.dataset.day);goView('hoy');return;}
+
   const go=t.closest('[data-go]');
   if(go){curEx=+go.dataset.go;clearInterval(tv);tv=null;renderHoy();return;}
 
   if(t.closest('#slabHit')){
-    const L=exList(),i=curIdx(L),ex=L[i],d=day(today());
+    const L=exList(),i=curIdx(L),ex=L[i],d=day(vKey());
     const n=(d.sets[ex.id]||0)+1;
     d.sets[ex.id]=n;save();
     /* Al completar las series del ejercicio, salta al siguiente que quede
@@ -1119,7 +1176,7 @@ document.addEventListener('click',e=>{
     return;
   }
   if(t.closest('#slabUndo')){
-    const L=exList(),i=curIdx(L),ex=L[i],d=day(today());
+    const L=exList(),i=curIdx(L),ex=L[i],d=day(vKey());
     d.sets[ex.id]=Math.max(0,(d.sets[ex.id]||0)-1);save();paintSets();return;
   }
   if(t.closest('#howBtn')){
@@ -1132,7 +1189,7 @@ document.addEventListener('click',e=>{
   const tp=t.closest('.presets button');
   if(tp){startTimer(+tp.dataset.t,+tp.dataset.t);return;}
 
-  if(t.closest('#finBtn')){const d=day(today());d.fin=!d.fin;save();renderHoy();return;}
+  if(t.closest('#finBtn')){const d=day(vKey());d.fin=!d.fin;save();renderHoy();return;}
   if(t.closest('#toFuel')){goView('fuel');return;}
   if(t.closest('#fuelBack')){goView('hoy');return;}
 
@@ -1142,12 +1199,12 @@ document.addEventListener('click',e=>{
   if(rg){const id=rg.dataset.sk,i=+rg.dataset.i;D.skills[id]=(D.skills[id]===i)?i-1:i;save();renderLadders();return;}
 
   const q=t.closest('[data-p]');
-  if(q){const d=day(today());d.prot=Math.max(0,(d.prot||0)+ +q.dataset.p);save();renderFuel();return;}
+  if(q){const d=day(vKey());d.prot=Math.max(0,(d.prot||0)+ +q.dataset.p);save();renderFuel();return;}
   const qw=t.closest('[data-w]');
-  if(qw){const d=day(today());d.water=Math.max(0,Math.round(((d.water||0)+ +qw.dataset.w)*100)/100);save();renderFuel();return;}
-  if(t.closest('#creaToggle')){const d=day(today());d.crea=!d.crea;save();renderFuel();return;}
+  if(qw){const d=day(vKey());d.water=Math.max(0,Math.round(((d.water||0)+ +qw.dataset.w)*100)/100);save();renderFuel();return;}
+  if(t.closest('#creaToggle')){const d=day(vKey());d.crea=!d.crea;save();renderFuel();return;}
   if(t.closest('#fuelReset')){
-    const d=day(today());d.prot=0;d.water=0;d.crea=false;save();renderFuel();return;
+    const d=day(vKey());d.prot=0;d.water=0;d.crea=false;save();renderFuel();return;
   }
 
   const eq=t.closest('[data-eq]');
@@ -1195,7 +1252,7 @@ document.addEventListener('click',e=>{
 });
 
 document.addEventListener('input',e=>{
-  if(e.target.dataset.note!=null){day(today()).notes[e.target.dataset.note]=e.target.value;save();}
+  if(e.target.dataset.note!=null){day(vKey()).notes[e.target.dataset.note]=e.target.value;save();}
 });
 document.addEventListener('change',e=>{
   if(e.target.id==='startD'&&e.target.value){D.start=e.target.value;save();curEx=null;renderAll();return;}
