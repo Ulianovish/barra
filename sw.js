@@ -1,5 +1,5 @@
 /* Cambia VERSION en cada despliegue: fuerza una caché nueva y limpia la anterior. */
-const VERSION = '2026-08-24-tiza2';
+const VERSION = '2026-08-25-tiza3';
 const CACHE = 'barra-' + VERSION;
 const ASSETS = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', './icon-512-maskable.png'];
 
